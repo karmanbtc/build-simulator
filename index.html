@@ -6,19 +6,15 @@
     <title>RNG Build Optimizer</title>
     <style>
         :root {
-            --bg-color: #0f0f0f;
-            --panel-bg: #1a1a1a;
-            --accent: #00e5ff;
-            --text-main: #ffffff;
-            --text-dim: #b0b0b0;
-            --border: #333;
-            --exotic: #ff0011;
-            --mythic: #cf0064;
-            --legendary: #e66300;
+            --bg-color: #0d0d0d;
+            --panel-bg: #161616;
+            --accent: #00f2ff;
+            --text-main: #e0e0e0;
+            --border: #2a2a2a;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
@@ -27,91 +23,88 @@
 
         .container {
             display: grid;
-            grid-template-columns: 320px 1fr 320px;
-            gap: 15px;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 20px;
             max-width: 1600px;
             margin: 0 auto;
         }
 
         .panel {
             background: var(--panel-bg);
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
         }
 
-        h2 { color: var(--accent); margin-top: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
-        h3 { font-size: 0.9rem; margin: 15px 0 10px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        h2 { color: var(--accent); margin-top: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { font-size: 0.85rem; margin: 15px 0 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
 
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px; }
         select, input {
             width: 100%;
-            padding: 8px;
-            background: #252525;
-            border: 1px solid #444;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #333;
             color: #fff;
             border-radius: 6px;
         }
 
+        .museum-rarity { margin-bottom: 20px; }
         .ore-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 8px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
         }
 
         .ore-toggle {
             display: flex;
             align-items: center;
-            font-size: 0.75rem;
-            background: #222;
-            padding: 5px;
+            font-size: 0.7rem;
+            background: #1e1e1e;
+            padding: 6px;
             border-radius: 4px;
             cursor: pointer;
-            transition: 0.2s;
+            border: 1px solid transparent;
         }
-
-        .ore-toggle:hover { background: #333; }
+        .ore-toggle:hover { border-color: var(--accent); }
         .ore-toggle input { width: auto; margin-right: 8px; }
 
-        .stat-row {
+        .stat-card {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #2a2a2a;
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
             font-size: 0.9rem;
         }
 
         .big-result {
-            margin-top: 20px;
-            padding: 20px;
-            background: linear-gradient(145deg, #222, #111);
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
             border: 2px solid var(--accent);
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
         }
+        .big-result h1 { margin: 5px 0 0; font-size: 2.8rem; color: #fff; }
 
-        .big-result h1 { margin: 0; font-size: 2.5rem; color: #fff; }
+        /* Rarity Colors */
+        .Common { color: #cccccc; } .Uncommon { color: #1fd13a; } .Rare { color: #0059ff; }
+        .Epic { color: #b11ae8; } .Legendary { color: #ffff00; } .Mythic { color: #cf0064; }
+        .Exotic { color: #ff0011; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="panel">
-        <h2>Loadout</h2>
+        <h2>Loadout & Passives</h2>
         
-        <h3>Player Base (Nothing On)</h3>
-        <div class="stat-row"><span>Luck:</span> <span>803</span></div>
-        <div class="stat-row"><span>Cap:</span> <span>25</span></div>
-        <div class="stat-row"><span>Spd:</span> <span>0.45</span></div>
-
-        <h3>Pans & Enchants</h3>
+        <h3>Pans</h3>
         <div class="input-group">
-            <label>Select Pan</label>
             <select id="equip-pan" onchange="calculate()">
-                <option value="none">None</option>
+                <option value="none">No Pan</option>
                 <option value="blightflow">Blightflow Pan</option>
                 <option value="gingerbread">Gingerbread Pan</option>
                 <option value="abyssal">Abyssal Pan</option>
@@ -126,42 +119,37 @@
             </select>
         </div>
 
-        <h3>Permanent Buffs</h3>
-        <div class="ore-toggle">
-            <input type="checkbox" id="mastery-luck" onchange="calculate()" checked>
-            <label>Mastery Luck (0.25x)</label>
-        </div>
-        <div class="ore-toggle" style="margin-top:5px;">
-            <input type="checkbox" id="runes-luck" onchange="calculate()" checked>
-            <label>Runes Luck (1.2x)</label>
-        </div>
-        <div class="ore-toggle" style="margin-top:5px;">
-            <input type="checkbox" id="runes-spd" onchange="calculate()" checked>
-            <label>Runes Shake Spd (25%)</label>
+        <h3>Global Modifiers</h3>
+        <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
+        <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
+        <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
+        
+        <div style="margin-top:20px; padding:10px; background:#111; border-radius:5px; font-size:0.75rem; color:#666;">
+            <strong>Base Stats Used:</strong><br>
+            Luck: 803 | Cap: 25 | Spd: 0.45
         </div>
     </div>
 
     <div class="panel">
-        <h2>Museum (All Voidtorn: Luck & Cap Boost)</h2>
+        <h2>Museum (All Voidtorn Applied)</h2>
         <div id="museum-container"></div>
     </div>
 
     <div class="panel">
-        <h2>Final Stats</h2>
-        <div class="stat-row"><span>Total Luck:</span> <span id="stat-luck">0</span></div>
-        <div class="stat-row"><span>Total Capacity:</span> <span id="stat-cap">0</span></div>
-        <div class="stat-row"><span>Total Shake Str:</span> <span id="stat-str">0</span></div>
-        <div class="stat-row"><span>Total Shake Spd:</span> <span id="stat-spd">0</span></div>
-        <div class="stat-row"><span>Breakpoint (r):</span> <span id="stat-r">0</span></div>
+        <h2>Final Output</h2>
+        <div class="stat-card"><span>Total Luck:</span> <span id="stat-luck">0</span></div>
+        <div class="stat-card"><span>Total Capacity:</span> <span id="stat-cap">0</span></div>
+        <div class="stat-card"><span>Total Shake Str:</span> <span id="stat-str">0</span></div>
+        <div class="stat-card"><span>Total Shake Spd:</span> <span id="stat-spd">0</span></div>
+        <div class="stat-card"><span>Breakpoint (r):</span> <span id="stat-r">0</span></div>
 
         <div class="big-result">
-            <p style="margin:0; font-size:0.8rem; color:var(--accent);">REROLLS PER SECOND</p>
+            <div style="font-size:0.75rem; color:var(--accent); text-transform:uppercase;">Rerolls Per Second</div>
             <h1 id="result-rps">0.00</h1>
         </div>
         
-        <div style="margin-top:20px; font-size:0.75rem; color:#666; line-height:1.4;">
-            <strong>Formula used:</strong><br>
-            $\frac{L \sqrt{C}}{\frac{C}{rs} + 2.5}$
+        <div style="margin-top:20px; font-size:0.7rem; color:#444; text-align:center;">
+            Formula: $rps = \frac{L\sqrt{C}}{\frac{C}{rs} + 2.5}$
         </div>
     </div>
 </div>
@@ -189,74 +177,133 @@
         abyssal: { luck: 700, cap: 250, str: 8, spd: 110 }
     };
 
-    const voidtorn = { "Common": 0.005, "Uncommon": 0.0075, "Rare": 0.0125, "Epic": 0.02, "Legendary": 0.03, "Mythic": 0.05, "Exotic": 0.08 };
+    const voidtornBonus = { "Common": 0.005, "Uncommon": 0.0075, "Rare": 0.0125, "Epic": 0.02, "Legendary": 0.03, "Mythic": 0.05, "Exotic": 0.08 };
 
     const museumData = {
-        "Common": [{name: "Pyrite", buff: "cap", val: 0.05}, {name: "Seashell", buff: "cap", val: 0.05}, {name: "Pearl", buff: "spd", val: 0.05}, {name: "Silver", buff: "spd", val: 0.05}],
-        "Uncommon": [{name: "Neodymium", buff: "str", val: 0.08}, {name: "Smoky Quartz", buff: "str", val: 0.08}, {name: "Topaz", buff: "cap", val: 0.08}],
-        "Rare": [{name: "Peridot", buff: "luck", val: 0.13}, {name: "Ruby", buff: "str", val: 0.13}, {name: "Silver Clamshell", buff: "spd", val: 0.13}],
-        "Epic": [{name: "Emerald", buff: "luck", val: 0.2}, {name: "Mercury", buff: "str", val: 0.2}, {name: "Moonstone", buff: "spd", val: 0.2}, {name: "Opal", buff: "spd", val: 0.2}],
-        "Legendary": [{name: "Diamond", buff: "luck", val: 0.3}, {name: "Rose Gold", buff: "str", val: 0.3}, {name: "Starshine", buff: "spd", val: 0.15}, {name: "Specterite", buff: "spd", val: 0.3}],
-        "Mythic": [{name: "Inferlume", buff: "luck", val: 0.5}, {name: "Pink Diamond", buff: "luck", val: 0.5}, {name: "Mythril", buff: "str", val: 0.5}, {name: "Prismara", buff: "luck_cap_str", val: 0.25}],
-        "Exotic": [{name: "Vineheart", buff: "luck", val: 0.8}, {name: "Voidstone", buff: "luck_cap", val: 0.4}, {name: "North Star", buff: "luck_cap_spd", val: 0.2}, {name: "Eternium", buff: "luck_spd", val: 0.32}, {name: "Cryonic Artifact", buff: "str_spd", val: [1.2, -0.8]}]
+        "Common": [
+            { name: "Pyrite", buff: "cap", val: 0.05 }, { name: "Seashell", buff: "cap", val: 0.05 },
+            { name: "Copper", buff: "size", val: 0.04 }, { name: "Obsidian", buff: "size", val: 0.04 },
+            { name: "Amethyst", buff: "dig", val: 0.05 }, { name: "Blue Ice", buff: "dig", val: 0.05 },
+            { name: "Platinum", buff: "dig", val: 0.05 }, { name: "Pearl", buff: "spd", val: 0.05 },
+            { name: "Silver", buff: "spd", val: 0.05 }, { name: "Gold", buff: "sell", val: 0.05 }
+        ],
+        "Uncommon": [
+            { name: "Coral", buff: "cap", val: 0.08 }, { name: "Topaz", buff: "cap", val: 0.08 },
+            { name: "Zircon", buff: "size", val: 0.05 }, { name: "Rock Candy", buff: "size", val: 0.05 },
+            { name: "Neodymium", buff: "str", val: 0.08 }, { name: "Smoky Quartz", buff: "str", val: 0.08 },
+            { name: "Sapphire", buff: "dig", val: 0.08 }, { name: "Titanium", buff: "dig", val: 0.08 },
+            { name: "Malachite", buff: "mod", val: 0.08 }, { name: "Glowberry", buff: "sell", val: 0.08 },
+            { name: "Electrum", buff: "sell", val: 0.08 }
+        ],
+        "Rare": [
+            { name: "Peridot", buff: "luck", val: 0.13 }, { name: "Meteoric Iron", buff: "str", val: 0.13 },
+            { name: "Ruby", buff: "str", val: 0.13 }, { name: "Azuralite", buff: "dig", val: 0.13 },
+            { name: "Glacial Quartz", buff: "dig", val: 0.13 }, { name: "Lapis Lazuli", buff: "dig", val: 0.13 },
+            { name: "Gloomberry", buff: "dig", val: 0.13 }, { name: "Jade", buff: "mod", val: 0.13 },
+            { name: "Onyx", buff: "mod", val: 0.13 }, { name: "Diopside", buff: "mod", val: 0.13 },
+            { name: "Amber", buff: "sell", val: 0.13 }, { name: "Pyrelith", buff: "sell", val: 0.13 },
+            { name: "Candy Cane", buff: "size", val: 0.09 }, { name: "Silver Clamshell", buff: "spd", val: 0.13 }
+        ],
+        "Epic": [
+            { name: "Emerald", buff: "luck", val: 0.20 }, { name: "Ammonite Fossil", buff: "cap", val: 0.20 },
+            { name: "Golden Pearl", buff: "cap", val: 0.20 }, { name: "Osmium", buff: "size", val: 0.20 },
+            { name: "Ashvein", buff: "size", val: 0.14 }, { name: "Bone", buff: "size", val: 0.14 },
+            { name: "Mercury", buff: "str", val: 0.20 }, { name: "Aurorite", buff: "dig", val: 0.20 },
+            { name: "Borealite", buff: "dig", val: 0.20 }, { name: "Cobalt", buff: "dig", val: 0.20 },
+            { name: "Iridium", buff: "dig", val: 0.20 }, { name: "Lightshard", buff: "dig", val: 0.20 },
+            { name: "Moonstone", buff: "spd", val: 0.20 }, { name: "Opal", buff: "spd", val: 0.20 },
+            { name: "Glowmoss", buff: "mod", val: 0.20 }, { name: "Pyronium", buff: "sell", val: 0.20 }
+        ],
+        "Legendary": [
+            { name: "Diamond", buff: "luck", val: 0.30 }, { name: "Catseye", buff: "cap", val: 0.30 },
+            { name: "Firefly Stone", buff: "cap", val: 0.30 }, { name: "Luminum", buff: "cap", val: 0.30 },
+            { name: "Volcanic Key", buff: "size", val: 0.21 }, { name: "Fire Opal", buff: "size", val: 0.21 },
+            { name: "Cinnabar", buff: "size", val: 0.21 }, { name: "Dragon Bone", buff: "size", val: 0.21 },
+            { name: "Rose Gold", buff: "str", val: 0.30 }, { name: "Aetherite", buff: "dig", val: 0.30 },
+            { name: "Aquamarine", buff: "dig", val: 0.30 }, { name: "Lost Soul", buff: "dig", val: 0.30 },
+            { name: "Bismuth", buff: "dig", val: 0.30 }, { name: "Gloomcap", buff: "dig", val: 0.30 },
+            { name: "Starshine", buff: "dig_spd", val: 0.15 }, { name: "Specterite", buff: "spd", val: 0.30 },
+            { name: "Peppermint Prism", buff: "mod", val: 0.30 }, { name: "Uranium", buff: "mod", val: 0.30 },
+            { name: "Radium", buff: "mod", val: 0.30 }, { name: "Tourmaline", buff: "sell", val: 0.30 },
+            { name: "Palladium", buff: "sell", val: 0.30 }
+        ],
+        "Mythic": [
+            { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] }, { name: "Inferlume", buff: "luck", val: 0.50 },
+            { name: "Pink Diamond", buff: "luck", val: 0.50 }, { name: "Chrysoberyl", buff: "luck", val: 0.50 },
+            { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 }, { name: "Vortessence", buff: "cap", val: 0.50 },
+            { name: "Painite", buff: "size", val: 0.35 }, { name: "Star Garnet", buff: "size", val: 0.35 },
+            { name: "Red Beryl", buff: "size", val: 0.35 }, { name: "Volcanic Core", buff: "size_dig", val: [0.2, 0.25] },
+            { name: "Frostshard", buff: "dig_str", val: 0.50 }, { name: "Mythril", buff: "str", val: 0.50 },
+            { name: "Radiant Gold", buff: "sell", val: 0.50 }
+        ],
+        "Exotic": [
+            { name: "Vineheart", buff: "luck", val: 0.80 }, { name: "Voidstone", buff: "luck_cap", val: 0.40 },
+            { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 }, { name: "Eternium", buff: "luck_spd_dig", val: 0.32 },
+            { name: "Dinosaur Skull", buff: "size_sell", val: [0.32, 0.4] }, { name: "Pumpkin Soul", buff: "size", val: 0.56 },
+            { name: "Bloodstone", buff: "size", val: 0.56 }, { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] },
+            { name: "Astral Spore", buff: "dig", val: 0.80 }, { name: "Umbrite", buff: "dig_spd", val: 0.40 },
+            { name: "Adamantine", buff: "mod", val: 0.80 }
+        ]
     };
 
     function renderMuseum() {
         const container = document.getElementById('museum-container');
         for (const [rarity, ores] of Object.entries(museumData)) {
-            const div = document.createElement('div');
-            div.innerHTML = `<h3 style="color:var(--accent)">${rarity}</h3><div class="ore-grid" id="grid-${rarity}"></div>`;
-            container.appendChild(div);
+            const section = document.createElement('div');
+            section.className = 'museum-rarity';
+            section.innerHTML = `<h3 class="${rarity}">${rarity}</h3><div class="ore-grid" id="grid-${rarity}"></div>`;
+            container.appendChild(section);
             const grid = document.getElementById(`grid-${rarity}`);
             ores.forEach(ore => {
-                grid.innerHTML += `<label class="ore-toggle"><input type="checkbox" class="m-check" data-rarity="${rarity}" data-buff="${ore.buff}" data-val='${JSON.stringify(ore.val)}' onchange="calculate()">${ore.name}</label>`;
+                const label = document.createElement('label');
+                label.className = 'ore-toggle';
+                label.innerHTML = `<input type="checkbox" class="museum-box" data-rarity="${rarity}" data-buff="${ore.buff}" data-val='${JSON.stringify(ore.val)}' onchange="calculate()">${ore.name}`;
+                grid.appendChild(label);
             });
         }
     }
 
     function calculate() {
         let L = 803, C = 25, S = 0.45, Str = 1;
-        let mL = 0, mC = 0, mS = 0, mStr = 0;
+        let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
-        const panKey = document.getElementById('equip-pan').value;
-        if(panKey !== 'none') {
-            L += pans[panKey].luck; C += pans[panKey].cap; S += pans[panKey].spd; Str += pans[panKey].str;
-        }
+        const pan = pans[document.getElementById('equip-pan').value];
+        if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
 
-        const ench = document.getElementById('pan-enchant').value;
-        if(ench === 'glowing') mS += 0.25;
-        if(ench === 'cosmic') { C += 50; Str += 3; }
+        const enc = document.getElementById('pan-enchant').value;
+        if (enc === 'glowing') multiS += 0.25;
+        if (enc === 'cosmic') { C += 50; Str += 3; }
 
-        if(document.getElementById('mastery-luck').checked) mL += 0.25;
-        if(document.getElementById('runes-luck').checked) mL += 1.2;
-        if(document.getElementById('runes-spd').checked) mS += 0.25;
+        if (document.getElementById('mastery-luck').checked) multiL += 0.25;
+        if (document.getElementById('runes-luck').checked) multiL += 1.2;
+        if (document.getElementById('runes-spd').checked) multiS += 0.25;
 
-        document.querySelectorAll('.m-check:checked').forEach(box => {
+        document.querySelectorAll('.museum-box:checked').forEach(box => {
             const r = box.dataset.rarity;
             const b = box.dataset.buff;
             const v = JSON.parse(box.dataset.val);
-            mL += voidtorn[r]; mC += voidtorn[r];
+            multiL += voidtornBonus[r]; multiC += voidtornBonus[r];
 
-            if(b.includes('luck')) mL += Array.isArray(v) ? v[0] : v;
-            if(b.includes('cap')) mC += Array.isArray(v) ? v[0] : v;
-            if(b.includes('str')) mStr += Array.isArray(v) ? v[0] : v;
-            if(b.includes('spd')) mS += Array.isArray(v) ? (v[1] || v[0]) : v;
+            if (b.includes('luck')) multiL += Array.isArray(v) ? v[0] : v;
+            if (b.includes('cap')) multiC += Array.isArray(v) ? v[0] : v;
+            if (b.includes('str')) multiStr += Array.isArray(v) ? v[1] : v;
+            if (b.includes('spd')) multiS += Array.isArray(v) ? v[2] : v;
         });
 
-        const fL = L * (1 + mL);
-        const fC = C * (1 + mC);
-        const fS = S * (1 + mS);
-        const fStr = Str * (1 + mStr);
+        const totalL = L * (1 + multiL);
+        const totalC = C * (1 + multiC);
+        const totalS = S * (1 + multiS);
+        const totalStr = Str * (1 + multiStr);
 
         let r = 1;
-        for(let entry of speedTable) { if(fS >= entry.s) r = entry.r; }
+        for (let entry of speedTable) { if (totalS >= entry.s) r = entry.r; }
 
-        const rps = (fL * Math.sqrt(fC)) / ((fC / (r * fStr)) + 2.5);
+        const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (r * totalStr)) + 2.5);
 
-        document.getElementById('stat-luck').innerText = Math.floor(fL).toLocaleString();
-        document.getElementById('stat-cap').innerText = Math.floor(fC).toLocaleString();
-        document.getElementById('stat-str').innerText = fStr.toFixed(1);
-        document.getElementById('stat-spd').innerText = fS.toFixed(1);
+        document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
+        document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
+        document.getElementById('stat-str').innerText = totalStr.toFixed(1);
+        document.getElementById('stat-spd').innerText = totalS.toFixed(1);
         document.getElementById('stat-r').innerText = r.toFixed(2);
         document.getElementById('result-rps').innerText = rps.toFixed(2);
     }
