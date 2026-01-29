@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RNG Build Optimizer</title>
+    <title>RNG Build Optimizer - Equipment Focus</title>
     <style>
         :root {
             --bg-color: #0d0d0d;
@@ -11,6 +11,8 @@
             --accent: #00f2ff;
             --text-main: #e0e0e0;
             --border: #2a2a2a;
+            --rarity-prismatic: #ff00ff;
+            --rarity-festive: #ff4d4d;
         }
 
         body {
@@ -34,13 +36,70 @@
             padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
+            position: relative;
+        }
+
+        /* Museum Overlay Styles */
+        #museum-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .museum-content {
+            background: var(--panel-bg);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 2px solid var(--accent);
+            border-radius: 15px;
+        }
+
+        .open-museum-btn {
+            width: 100%;
+            padding: 15px;
+            background: #222;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        /* Equipment Grid Styles */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .slot {
+            background: #111;
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .ring-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
         }
 
         h2 { color: var(--accent); margin-top: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
         h3 { font-size: 0.85rem; margin: 15px 0 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
 
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 5px; }
         select, input {
             width: 100%;
             padding: 10px;
@@ -48,9 +107,9 @@
             border: 1px solid #333;
             color: #fff;
             border-radius: 6px;
+            font-size: 0.8rem;
         }
 
-        .museum-rarity { margin-bottom: 20px; }
         .ore-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -65,10 +124,7 @@
             padding: 6px;
             border-radius: 4px;
             cursor: pointer;
-            border: 1px solid transparent;
         }
-        .ore-toggle:hover { border-color: var(--accent); }
-        .ore-toggle input { width: auto; margin-right: 8px; }
 
         .stat-card {
             display: flex;
@@ -85,17 +141,26 @@
             border: 2px solid var(--accent);
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
         }
+
         .big-result h1 { margin: 5px 0 0; font-size: 2.8rem; color: #fff; }
 
-        /* Rarity Colors */
         .Common { color: #cccccc; } .Uncommon { color: #1fd13a; } .Rare { color: #0059ff; }
         .Epic { color: #b11ae8; } .Legendary { color: #ffff00; } .Mythic { color: #cf0064; }
         .Exotic { color: #ff0011; }
     </style>
 </head>
 <body>
+
+<div id="museum-overlay">
+    <div class="museum-content">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h2>Museum Collection (All Voidtorn Applied)</h2>
+            <button onclick="toggleMuseum()" style="background:red; color:white; border:none; padding:5px 15px; cursor:pointer; border-radius:5px;">Close</button>
+        </div>
+        <div id="museum-container"></div>
+    </div>
+</div>
 
 <div class="container">
     <div class="panel">
@@ -111,7 +176,7 @@
             </select>
         </div>
         <div class="input-group">
-            <label>Enchant</label>
+            <label style="font-size:0.75rem; color:#888;">Enchant</label>
             <select id="pan-enchant" onchange="calculate()">
                 <option value="none">None</option>
                 <option value="glowing">Glowing (+25% Shake Spd)</option>
@@ -124,15 +189,38 @@
         <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
         
+        <button class="open-museum-btn" onclick="toggleMuseum()">Open Museum</button>
+
         <div style="margin-top:20px; padding:10px; background:#111; border-radius:5px; font-size:0.75rem; color:#666;">
-            <strong>Base Stats Used:</strong><br>
-            Luck: 803 | Cap: 25 | Spd: 0.45
+            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 0.45
         </div>
     </div>
 
     <div class="panel">
-        <h2>Museum (All Voidtorn Applied)</h2>
-        <div id="museum-container"></div>
+        <h2>Equipped Gear</h2>
+        
+        <div class="equipment-grid">
+            <div class="slot">
+                <label>Necklace</label>
+                <select id="slot-neck" onchange="calculate()">
+                    <option value="none">Empty</option>
+                    <option value="witch_hat">Witch Hat (1760 Luck, 44 Speed)</option>
+                </select>
+            </div>
+            <div class="slot">
+                <label>Charm</label>
+                <select id="slot-charm" onchange="calculate()">
+                    <option value="none">Empty</option>
+                    <option value="venomshank">Venomshank (2080 Luck)</option>
+                    <option value="santa_bag">Santa's Bag (1080 Luck, 880 Cap)</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>Rings (8 Slots)</h3>
+        <div class="ring-slots-grid" id="ring-container">
+            </div>
+        <p style="font-size:0.7rem; color:#666; margin-top:10px;">* Note: Ring of Champions is limited to 1 unique slot.</p>
     </div>
 
     <div class="panel">
@@ -155,6 +243,23 @@
 </div>
 
 <script>
+    const itemData = {
+        rings: {
+            purifying: { name: "Purifying Ring", luck: 144, cap: 176, str: 48, spd: 0 },
+            vortex: { name: "Vortex Ring", luck: 248, cap: 520, str: 18, spd: 0 },
+            otherworldly: { name: "Otherworldly Ring", luck: 600, cap: 0, str: 0, spd: 0.35 }, // 35% speed
+            umbrite: { name: "Umbrite Ring", luck: 392, cap: 160, str: 18, spd: 0 },
+            champions: { name: "Ring of Champions", luck: 880, cap: 720, str: 88, spd: 160, unique: true }
+        },
+        charms: {
+            venomshank: { luck: 2080, cap: 0 },
+            santa_bag: { luck: 1080, cap: 880 }
+        },
+        neck: {
+            witch_hat: { luck: 1760, spd: 44 }
+        }
+    };
+
     const speedTable = [
         { s: 250, r: 6.031 }, { s: 300, r: 6.906 }, { s: 350, r: 6.620 },
         { s: 400, r: 6.793 }, { s: 450, r: 9.119 }, { s: 500, r: 9.817 },
@@ -180,71 +285,43 @@
     const voidtornBonus = { "Common": 0.005, "Uncommon": 0.0075, "Rare": 0.0125, "Epic": 0.02, "Legendary": 0.03, "Mythic": 0.05, "Exotic": 0.08 };
 
     const museumData = {
-        "Common": [
-            { name: "Pyrite", buff: "cap", val: 0.05 }, { name: "Seashell", buff: "cap", val: 0.05 },
-            { name: "Copper", buff: "size", val: 0.04 }, { name: "Obsidian", buff: "size", val: 0.04 },
-            { name: "Amethyst", buff: "dig", val: 0.05 }, { name: "Blue Ice", buff: "dig", val: 0.05 },
-            { name: "Platinum", buff: "dig", val: 0.05 }, { name: "Pearl", buff: "spd", val: 0.05 },
-            { name: "Silver", buff: "spd", val: 0.05 }, { name: "Gold", buff: "sell", val: 0.05 }
-        ],
-        "Uncommon": [
-            { name: "Coral", buff: "cap", val: 0.08 }, { name: "Topaz", buff: "cap", val: 0.08 },
-            { name: "Zircon", buff: "size", val: 0.05 }, { name: "Rock Candy", buff: "size", val: 0.05 },
-            { name: "Neodymium", buff: "str", val: 0.08 }, { name: "Smoky Quartz", buff: "str", val: 0.08 },
-            { name: "Sapphire", buff: "dig", val: 0.08 }, { name: "Titanium", buff: "dig", val: 0.08 },
-            { name: "Malachite", buff: "mod", val: 0.08 }, { name: "Glowberry", buff: "sell", val: 0.08 },
-            { name: "Electrum", buff: "sell", val: 0.08 }
-        ],
-        "Rare": [
-            { name: "Peridot", buff: "luck", val: 0.13 }, { name: "Meteoric Iron", buff: "str", val: 0.13 },
-            { name: "Ruby", buff: "str", val: 0.13 }, { name: "Azuralite", buff: "dig", val: 0.13 },
-            { name: "Glacial Quartz", buff: "dig", val: 0.13 }, { name: "Lapis Lazuli", buff: "dig", val: 0.13 },
-            { name: "Gloomberry", buff: "dig", val: 0.13 }, { name: "Jade", buff: "mod", val: 0.13 },
-            { name: "Onyx", buff: "mod", val: 0.13 }, { name: "Diopside", buff: "mod", val: 0.13 },
-            { name: "Amber", buff: "sell", val: 0.13 }, { name: "Pyrelith", buff: "sell", val: 0.13 },
-            { name: "Candy Cane", buff: "size", val: 0.09 }, { name: "Silver Clamshell", buff: "spd", val: 0.13 }
-        ],
-        "Epic": [
-            { name: "Emerald", buff: "luck", val: 0.20 }, { name: "Ammonite Fossil", buff: "cap", val: 0.20 },
-            { name: "Golden Pearl", buff: "cap", val: 0.20 }, { name: "Osmium", buff: "size", val: 0.20 },
-            { name: "Ashvein", buff: "size", val: 0.14 }, { name: "Bone", buff: "size", val: 0.14 },
-            { name: "Mercury", buff: "str", val: 0.20 }, { name: "Aurorite", buff: "dig", val: 0.20 },
-            { name: "Borealite", buff: "dig", val: 0.20 }, { name: "Cobalt", buff: "dig", val: 0.20 },
-            { name: "Iridium", buff: "dig", val: 0.20 }, { name: "Lightshard", buff: "dig", val: 0.20 },
-            { name: "Moonstone", buff: "spd", val: 0.20 }, { name: "Opal", buff: "spd", val: 0.20 },
-            { name: "Glowmoss", buff: "mod", val: 0.20 }, { name: "Pyronium", buff: "sell", val: 0.20 }
-        ],
-        "Legendary": [
-            { name: "Diamond", buff: "luck", val: 0.30 }, { name: "Catseye", buff: "cap", val: 0.30 },
-            { name: "Firefly Stone", buff: "cap", val: 0.30 }, { name: "Luminum", buff: "cap", val: 0.30 },
-            { name: "Volcanic Key", buff: "size", val: 0.21 }, { name: "Fire Opal", buff: "size", val: 0.21 },
-            { name: "Cinnabar", buff: "size", val: 0.21 }, { name: "Dragon Bone", buff: "size", val: 0.21 },
-            { name: "Rose Gold", buff: "str", val: 0.30 }, { name: "Aetherite", buff: "dig", val: 0.30 },
-            { name: "Aquamarine", buff: "dig", val: 0.30 }, { name: "Lost Soul", buff: "dig", val: 0.30 },
-            { name: "Bismuth", buff: "dig", val: 0.30 }, { name: "Gloomcap", buff: "dig", val: 0.30 },
-            { name: "Starshine", buff: "dig_spd", val: 0.15 }, { name: "Specterite", buff: "spd", val: 0.30 },
-            { name: "Peppermint Prism", buff: "mod", val: 0.30 }, { name: "Uranium", buff: "mod", val: 0.30 },
-            { name: "Radium", buff: "mod", val: 0.30 }, { name: "Tourmaline", buff: "sell", val: 0.30 },
-            { name: "Palladium", buff: "sell", val: 0.30 }
-        ],
-        "Mythic": [
-            { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] }, { name: "Inferlume", buff: "luck", val: 0.50 },
-            { name: "Pink Diamond", buff: "luck", val: 0.50 }, { name: "Chrysoberyl", buff: "luck", val: 0.50 },
-            { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 }, { name: "Vortessence", buff: "cap", val: 0.50 },
-            { name: "Painite", buff: "size", val: 0.35 }, { name: "Star Garnet", buff: "size", val: 0.35 },
-            { name: "Red Beryl", buff: "size", val: 0.35 }, { name: "Volcanic Core", buff: "size_dig", val: [0.2, 0.25] },
-            { name: "Frostshard", buff: "dig_str", val: 0.50 }, { name: "Mythril", buff: "str", val: 0.50 },
-            { name: "Radiant Gold", buff: "sell", val: 0.50 }
-        ],
-        "Exotic": [
-            { name: "Vineheart", buff: "luck", val: 0.80 }, { name: "Voidstone", buff: "luck_cap", val: 0.40 },
-            { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 }, { name: "Eternium", buff: "luck_spd_dig", val: 0.32 },
-            { name: "Dinosaur Skull", buff: "size_sell", val: [0.32, 0.4] }, { name: "Pumpkin Soul", buff: "size", val: 0.56 },
-            { name: "Bloodstone", buff: "size", val: 0.56 }, { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] },
-            { name: "Astral Spore", buff: "dig", val: 0.80 }, { name: "Umbrite", buff: "dig_spd", val: 0.40 },
-            { name: "Adamantine", buff: "mod", val: 0.80 }
-        ]
+        "Common": [ { name: "Pyrite", buff: "cap", val: 0.05 }, { name: "Seashell", buff: "cap", val: 0.05 }, { name: "Copper", buff: "size", val: 0.04 }, { name: "Obsidian", buff: "size", val: 0.04 }, { name: "Amethyst", buff: "dig", val: 0.05 }, { name: "Blue Ice", buff: "dig", val: 0.05 }, { name: "Platinum", buff: "dig", val: 0.05 }, { name: "Pearl", buff: "spd", val: 0.05 }, { name: "Silver", buff: "spd", val: 0.05 }, { name: "Gold", buff: "sell", val: 0.05 } ],
+        "Uncommon": [ { name: "Coral", buff: "cap", val: 0.08 }, { name: "Topaz", buff: "cap", val: 0.08 }, { name: "Zircon", buff: "size", val: 0.05 }, { name: "Rock Candy", buff: "size", val: 0.05 }, { name: "Neodymium", buff: "str", val: 0.08 }, { name: "Smoky Quartz", buff: "str", val: 0.08 }, { name: "Sapphire", buff: "dig", val: 0.08 }, { name: "Titanium", buff: "dig", val: 0.08 }, { name: "Malachite", buff: "mod", val: 0.08 }, { name: "Glowberry", buff: "sell", val: 0.08 }, { name: "Electrum", buff: "sell", val: 0.08 } ],
+        "Rare": [ { name: "Peridot", buff: "luck", val: 0.13 }, { name: "Meteoric Iron", buff: "str", val: 0.13 }, { name: "Ruby", buff: "str", val: 0.13 }, { name: "Azuralite", buff: "dig", val: 0.13 }, { name: "Glacial Quartz", buff: "dig", val: 0.13 }, { name: "Lapis Lazuli", buff: "dig", val: 0.13 }, { name: "Gloomberry", buff: "dig", val: 0.13 }, { name: "Jade", buff: "mod", val: 0.13 }, { name: "Onyx", buff: "mod", val: 0.13 }, { name: "Diopside", buff: "mod", val: 0.13 }, { name: "Amber", buff: "sell", val: 0.13 }, { name: "Pyrelith", buff: "sell", val: 0.13 }, { name: "Candy Cane", buff: "size", val: 0.09 }, { name: "Silver Clamshell", buff: "spd", val: 0.13 } ],
+        "Epic": [ { name: "Emerald", buff: "luck", val: 0.20 }, { name: "Ammonite Fossil", buff: "cap", val: 0.20 }, { name: "Golden Pearl", buff: "cap", val: 0.20 }, { name: "Osmium", buff: "size", val: 0.20 }, { name: "Ashvein", buff: "size", val: 0.14 }, { name: "Bone", buff: "size", val: 0.14 }, { name: "Mercury", buff: "str", val: 0.20 }, { name: "Aurorite", buff: "dig", val: 0.20 }, { name: "Borealite", buff: "dig", val: 0.20 }, { name: "Cobalt", buff: "dig", val: 0.20 }, { name: "Iridium", buff: "dig", val: 0.20 }, { name: "Lightshard", buff: "dig", val: 0.20 }, { name: "Moonstone", buff: "spd", val: 0.20 }, { name: "Opal", buff: "spd", val: 0.20 }, { name: "Glowmoss", buff: "mod", val: 0.20 }, { name: "Pyronium", buff: "sell", val: 0.20 } ],
+        "Legendary": [ { name: "Diamond", buff: "luck", val: 0.30 }, { name: "Catseye", buff: "cap", val: 0.30 }, { name: "Firefly Stone", buff: "cap", val: 0.30 }, { name: "Luminum", buff: "cap", val: 0.30 }, { name: "Volcanic Key", buff: "size", val: 0.21 }, { name: "Fire Opal", buff: "size", val: 0.21 }, { name: "Cinnabar", buff: "size", val: 0.21 }, { name: "Dragon Bone", buff: "size", val: 0.21 }, { name: "Rose Gold", buff: "str", val: 0.30 }, { name: "Aetherite", buff: "dig", val: 0.30 }, { name: "Aquamarine", buff: "dig", val: 0.30 }, { name: "Lost Soul", buff: "dig", val: 0.30 }, { name: "Bismuth", buff: "dig", val: 0.30 }, { name: "Gloomcap", buff: "dig", val: 0.30 }, { name: "Starshine", buff: "dig_spd", val: 0.15 }, { name: "Specterite", buff: "spd", val: 0.30 }, { name: "Peppermint Prism", buff: "mod", val: 0.30 }, { name: "Uranium", buff: "mod", val: 0.30 }, { name: "Radium", buff: "mod", val: 0.30 }, { name: "Tourmaline", buff: "sell", val: 0.30 }, { name: "Palladium", buff: "sell", val: 0.30 } ],
+        "Mythic": [ { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] }, { name: "Inferlume", buff: "luck", val: 0.50 }, { name: "Pink Diamond", buff: "luck", val: 0.50 }, { name: "Chrysoberyl", buff: "luck", val: 0.50 }, { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 }, { name: "Vortessence", buff: "cap", val: 0.50 }, { name: "Painite", buff: "size", val: 0.35 }, { name: "Star Garnet", buff: "size", val: 0.35 }, { name: "Red Beryl", buff: "size", val: 0.35 }, { name: "Volcanic Core", buff: "size_dig", val: [0.2, 0.25] }, { name: "Frostshard", buff: "dig_str", val: 0.50 }, { name: "Mythril", buff: "str", val: 0.50 }, { name: "Radiant Gold", buff: "sell", val: 0.50 } ],
+        "Exotic": [ { name: "Vineheart", buff: "luck", val: 0.80 }, { name: "Voidstone", buff: "luck_cap", val: 0.40 }, { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 }, { name: "Eternium", buff: "luck_spd_dig", val: 0.32 }, { name: "Dinosaur Skull", buff: "size_sell", val: [0.32, 0.4] }, { name: "Pumpkin Soul", buff: "size", val: 0.56 }, { name: "Bloodstone", buff: "size", val: 0.56 }, { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] }, { name: "Astral Spore", buff: "dig", val: 0.80 }, { name: "Umbrite", buff: "dig_spd", val: 0.40 }, { name: "Adamantine", buff: "mod", val: 0.80 } ]
     };
+
+    function toggleMuseum() {
+        const overlay = document.getElementById('museum-overlay');
+        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function initRings() {
+        const container = document.getElementById('ring-container');
+        for(let i=1; i<=8; i++) {
+            const div = document.createElement('div');
+            div.className = 'slot';
+            div.innerHTML = `<label>Slot ${i}</label><select id="ring-${i}" onchange="validateRings(${i})">
+                <option value="none">Empty</option>
+                ${Object.entries(itemData.rings).map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('')}
+            </select>`;
+            container.appendChild(div);
+        }
+    }
+
+    function validateRings(changedIndex) {
+        const ringSelects = Array.from({length: 8}, (_, i) => document.getElementById(`ring-${i+1}`));
+        const championCount = ringSelects.filter(s => s.value === 'champions').length;
+        
+        if (championCount > 1) {
+            alert("You can only equip one Ring of Champions at a time!");
+            document.getElementById(`ring-${changedIndex}`).value = "none";
+        }
+        calculate();
+    }
 
     function renderMuseum() {
         const container = document.getElementById('museum-container');
@@ -267,6 +344,7 @@
         let L = 803, C = 25, S = 0.45, Str = 1;
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
+        // Pan Logic
         const pan = pans[document.getElementById('equip-pan').value];
         if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
 
@@ -274,10 +352,32 @@
         if (enc === 'glowing') multiS += 0.25;
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
+        // Equipment Stats
+        const neck = itemData.neck[document.getElementById('slot-neck').value];
+        if (neck) { L += neck.luck; S += neck.spd; }
+
+        const charm = itemData.charms[document.getElementById('slot-charm').value];
+        if (charm) { L += charm.luck; C += charm.cap; }
+
+        for(let i=1; i<=8; i++) {
+            const ringKey = document.getElementById(`ring-${i}`).value;
+            const ring = itemData.rings[ringKey];
+            if (ring) {
+                L += ring.luck;
+                C += ring.cap;
+                Str += ring.str;
+                // Special handling for Otherworldly (%) vs Champions (flat)
+                if (ringKey === 'otherworldly') multiS += ring.spd;
+                else S += ring.spd;
+            }
+        }
+
+        // Passives
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
         if (document.getElementById('runes-luck').checked) multiL += 1.2;
         if (document.getElementById('runes-spd').checked) multiS += 0.25;
 
+        // Museum
         document.querySelectorAll('.museum-box:checked').forEach(box => {
             const r = box.dataset.rarity;
             const b = box.dataset.buff;
@@ -308,6 +408,7 @@
         document.getElementById('result-rps').innerText = rps.toFixed(2);
     }
 
+    initRings();
     renderMuseum();
     calculate();
 </script>
