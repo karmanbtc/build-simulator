@@ -194,7 +194,7 @@
         </div>
         <h3>Global Modifiers & Totems</h3>
         <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
-        <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
+        <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (0.2x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
         <label class="ore-toggle" style="color:#ffd700;"><input type="checkbox" id="prospector-mvp" onchange="calculate()"> Prospector MVP (0.15x Luck/Cap)</label>
         
@@ -383,7 +383,7 @@ if (pan) {
 }
 
         const enc = document.getElementById('pan-enchant').value;
-        if (enc === 'glowing') multiS += 0.25;
+if (enc === 'glowing') S += 25; // Adds 25 flat to base S instead of multiS
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
 const neck = itemData.neck[document.getElementById('slot-neck').value];
@@ -417,8 +417,8 @@ if (ring) {
         if (shovel === 'rhythmic') multiL += 0.3;
         
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
-        if (document.getElementById('runes-luck').checked) multiL += 1.2;
-        if (document.getElementById('runes-spd').checked) multiS += 0.25;
+if (document.getElementById('runes-luck').checked) multiL += 0.2; // Changed from 1.2 to 0.2
+if (document.getElementById('runes-spd').checked) S += 25; // Adds 25 flat to base S instead of multiS
         if (document.getElementById('prospector-mvp').checked) {
             multiL += 0.15;
             multiC += 0.15;
