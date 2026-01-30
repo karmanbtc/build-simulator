@@ -208,20 +208,21 @@
         <h2>Equipped Gear</h2>
         <div class="equipment-grid">
             <div class="slot">
-                <label>Charm</label>
-                <select id="slot-charm" onchange="calculate()">
-                    <option value="none">Empty</option>
-                    <option value="witch_hat">Witch Hat</option>
-                    <option value="timelock_soul">Timelock Soul</option>
+                <label>Necklace</label>
+<select id="slot-neck" onchange="calculate()">
+    <option value="none">Empty</option>
+    <option value="venomshank">Venomshank</option>
+    <option value="santa_bag">Santa's Bag</option>
+</select>
                 </select>
             </div>
             <div class="slot">
-                <label>Necklace</label>
-                <select id="slot-neck" onchange="calculate()">
-                    <option value="none">Empty</option>
-                    <option value="venomshank">Venomshank</option>
-                    <option value="santa_bag">Santa's Bag</option>
-                </select>
+                <label>Charm</label>
+                <select id="slot-charm" onchange="calculate()">
+    <option value="none">Empty</option>
+    <option value="witch_hat">Witch Hat</option>
+    <option value="timelock_soul">Timelock Soul</option>
+</select>
             </div>
         </div>
 
@@ -246,7 +247,7 @@
 </div>
 
 <script>
-    const itemData = {
+const itemData = {
         rings: {
             purifying: { name: "Purifying Ring", luck: 144, cap: 176, str: 48, spd: 0 },
             vortex: { name: "Vortex Ring", luck: 248, cap: 520, str: 18, spd: 0 },
@@ -256,10 +257,10 @@
         },
         neck: {
             venomshank: { luck: 2080, cap: 0, spd: 0 },
-            santa_bag: { luck: 1080, cap: 880, spd: 0 },
+            santa_bag: { luck: 1080, cap: 880, spd: 0 }
         },
         charms: {
-            witch_hat: { luck: 1760, spd: 44 }
+            witch_hat: { luck: 1760, cap: 0, spd: 44 },
             timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         }
     };
@@ -358,8 +359,8 @@
         if (enc === 'glowing') multiS += 0.25;
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
-        const neck = itemData.neck[document.getElementById('slot-neck').value];
-        if (neck) { L += neck.luck; S += neck.spd; }
+const neck = itemData.neck[document.getElementById('slot-neck').value];
+        if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
         if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd || 0); }
