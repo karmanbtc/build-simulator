@@ -384,7 +384,7 @@ const itemData = {
 
     function calculate() {
         let L = 803, C = 25, S = 0, Str = 0;
-        let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
+        let multiL = 0, multiC = 0.05, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
         if (pan) { 
@@ -419,7 +419,7 @@ const itemData = {
 
         // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
-        if (shovel === 'non_euclidian') multiC += 0.5;
+        if (shovel === 'non_euclidian') multiC += 1.0;
         if (shovel === 'rhythmic') multiL += 0.3;
         
         // Passives & Runes
@@ -459,7 +459,7 @@ const itemData = {
 
     // SPEED LOGIC: Only multiply the gear (S), then add Totem/Runes as flat values
     let multipliedS = S * (1 + multiS); 
-    let flatSpdAdditions = 0;
+    let flatSpdAdditions = 20;
     if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 50;
     if (document.getElementById('runes-spd').checked) flatSpdAdditions += 25;
 
