@@ -11,8 +11,6 @@
             --accent: #00f2ff;
             --text-main: #e0e0e0;
             --border: #2a2a2a;
-            --rarity-prismatic: #ff00ff;
-            --rarity-festive: #ff4d4d;
         }
 
         body {
@@ -39,7 +37,6 @@
             position: relative;
         }
 
-        /* Museum Overlay Styles */
         #museum-overlay {
             display: none;
             position: fixed;
@@ -75,7 +72,6 @@
             border-radius: 8px;
         }
 
-        /* Equipment Grid Styles */
         .equipment-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -156,7 +152,7 @@
 <div id="museum-overlay">
     <div class="museum-content">
         <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h2>Museum Collection (All Voidtorn Applied)</h2>
+            <h2>Museum Collection (Voidtorn Active)</h2>
             <button onclick="toggleMuseum()" style="background:red; color:white; border:none; padding:5px 15px; cursor:pointer; border-radius:5px;">Close</button>
         </div>
         <div id="museum-container"></div>
@@ -168,34 +164,31 @@
         <h2>Loadout & Passives</h2>
         
         <h3>Pans</h3>
-        <div class="input-group">
-            <select id="equip-pan" onchange="calculate()">
-                <option value="none">No Pan</option>
-                <option value="blightflow">Blightflow Pan</option>
-                <option value="gingerbread">Gingerbread Pan</option>
-                <option value="abyssal">Abyssal Pan</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label style="font-size:0.75rem; color:#888;">Enchant</label>
-            <select id="pan-enchant" onchange="calculate()">
-                <option value="none">None</option>
-                <option value="glowing">Glowing (+25% Shake Spd)</option>
-                <option value="cosmic">Cosmic (+50 Cap, +3 Shake Str)</option>
-            </select>
-        </div>
-<h3>Shovel Enchant</h3>
-        <div class="input-group">
-            <select id="shovel-enchant" onchange="calculate()">
-                <option value="none">No Enchant</option>
-                <option value="non_euclidian">Non-Euclidian (+0.5x Cap)</option>
-                <option value="rhythmic">Rhythmic (+0.3x Luck)</option>
-            </select>
-        </div>
-        <h3>Global Modifiers & Totems</h3>
+        <select id="equip-pan" onchange="calculate()">
+            <option value="none">No Pan</option>
+            <option value="blightflow">Blightflow Pan</option>
+            <option value="gingerbread">Gingerbread Pan</option>
+            <option value="abyssal">Abyssal Pan</option>
+        </select>
+
+        <label style="font-size:0.75rem; color:#888; margin-top:10px; display:block;">Enchant</label>
+        <select id="pan-enchant" onchange="calculate()">
+            <option value="none">None</option>
+            <option value="glowing">Glowing (+25% Spd)</option>
+            <option value="cosmic">Cosmic (+50 Cap, +3 Str)</option>
+        </select>
+
+        <h3>Shovel Enchant</h3>
+        <select id="shovel-enchant" onchange="calculate()">
+            <option value="none">No Enchant</option>
+            <option value="non_euclidian">Non-Euclidian (+0.5x Cap)</option>
+            <option value="rhythmic">Rhythmic (+0.3x Luck)</option>
+        </select>
+
+        <h3>Global Modifiers</h3>
         <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
-        <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
+        <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Speed (25%)</label>
         <label class="ore-toggle" style="color:#ffd700;"><input type="checkbox" id="prospector-mvp" onchange="calculate()"> Prospector MVP (0.15x Luck/Cap)</label>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
@@ -205,10 +198,6 @@
         </div>
         
         <button class="open-museum-btn" onclick="toggleMuseum()">Open Museum</button>
-
-        <div style="margin-top:20px; padding:10px; background:#111; border-radius:5px; font-size:0.75rem; color:#666;">
-            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 125
-        </div>
     </div>
 
     <div class="panel">
@@ -216,34 +205,32 @@
         <div class="equipment-grid">
             <div class="slot">
                 <label>Necklace</label>
-<select id="slot-neck" onchange="calculate()">
-    <option value="none">Empty</option>
-    <option value="venomshank">Venomshank</option>
-    <option value="santa_bag">Santa's Bag</option>
-</select>
+                <select id="slot-neck" onchange="calculate()">
+                    <option value="none">Empty</option>
+                    <option value="venomshank">Venomshank</option>
+                    <option value="santa_bag">Santa's Bag</option>
                 </select>
             </div>
             <div class="slot">
                 <label>Charm</label>
                 <select id="slot-charm" onchange="calculate()">
-    <option value="none">Empty</option>
-    <option value="witch_hat">Witch Hat</option>
-    <option value="timelock_soul">Timelock Soul</option>
-</select>
+                    <option value="none">Empty</option>
+                    <option value="witch_hat">Witch Hat</option>
+                    <option value="timelock_soul">Timelock Soul</option>
+                </select>
             </div>
         </div>
 
         <h3>Rings (8 Slots)</h3>
         <div class="ring-slots-grid" id="ring-container"></div>
-        <p style="font-size:0.7rem; color:#666; margin-top:10px;">* Note: Ring of Champions is unique.</p>
     </div>
 
     <div class="panel">
         <h2>Final Output</h2>
-        <div class="stat-card"><span>Total Luck:</span> <span id="stat-luck">0</span></div>
-        <div class="stat-card"><span>Total Capacity:</span> <span id="stat-cap">0</span></div>
-        <div class="stat-card"><span>Total Shake Str:</span> <span id="stat-str">0</span></div>
-        <div class="stat-card"><span>Total Shake Spd:</span> <span id="stat-spd">0</span></div>
+        <div class="stat-card"><span>Luck:</span> <span id="stat-luck">0</span></div>
+        <div class="stat-card"><span>Capacity:</span> <span id="stat-cap">0</span></div>
+        <div class="stat-card"><span>Str:</span> <span id="stat-str">0</span></div>
+        <div class="stat-card"><span>Spd:</span> <span id="stat-spd">0</span></div>
         <div class="stat-card"><span>Breakpoint (r):</span> <span id="stat-r">0</span></div>
 
         <div class="big-result">
@@ -254,7 +241,7 @@
 </div>
 
 <script>
-const itemData = {
+    const itemData = {
         rings: {
             purifying: { name: "Purifying Ring", luck: 144, cap: 176, str: 48, spd: 0 },
             vortex: { name: "Vortex Ring", luck: 248, cap: 520, str: 18, spd: 0 },
@@ -272,38 +259,60 @@ const itemData = {
         }
     };
 
-    const speedTable = [
+  const speedTable = [
+
         { s: 250, r: 6.031 }, { s: 300, r: 6.906 }, { s: 350, r: 6.620 },
+
         { s: 400, r: 6.793 }, { s: 450, r: 9.119 }, { s: 500, r: 9.817 },
+
         { s: 550, r: 9.940 }, { s: 600, r: 10.461 }, { s: 650, r: 10.267 },
+
         { s: 710, r: 10.027 }, { s: 760, r: 9.119 }, { s: 810, r: 11.848 },
+
         { s: 860, r: 11.943 }, { s: 909, r: 12.325 }, { s: 939, r: 12.542 },
+
         { s: 989, r: 13.979 }, { s: 1039, r: 14.691 }, { s: 1069, r: 14.866 },
+
         { s: 1119, r: 13.953 }, { s: 1169, r: 11.592 }, { s: 1199, r: 14.299 },
+
         { s: 1249, r: 14.720 }, { s: 1299, r: 14.735 }, { s: 1329, r: 14.881 },
+
         { s: 1379, r: 14.451 }, { s: 1429, r: 12.658 }, { s: 1509, r: 11.981 },
+
         { s: 1559, r: 14.606 }, { s: 1689, r: 14.634 }, { s: 1731, r: 14.620 },
+
         { s: 1761, r: 12.853 }, { s: 1811, r: 15.259 }, { s: 1861, r: 15.385 },
+
         { s: 1941, r: 16.146 }, { s: 1991, r: 16.393 }, { s: 2121, r: 18.204 },
+
         { s: 2168, r: 14.313 }, { s: 2211, r: 19.231 }, { s: 2355, r: 19.608 }
+
     ];
 
     const pans = {
-        blightflow: { luck: 500, cap: 400, str: 30, spd: 200 },
-        gingerbread: { luck: 400, cap: 400, str: 25, spd: 120 },
-        abyssal: { luck: 700, cap: 250, str: 8, spd: 110 }
+        blightflow: { luck: 500, cap: 400, str: 30, spd: 100 },
+        gingerbread: { luck: 400, cap: 400, str: 25, spd: 20 },
+        abyssal: { luck: 700, cap: 250, str: 8, spd: 10 }
     };
 
     const voidtornBonus = { "Common": 0.005, "Uncommon": 0.0075, "Rare": 0.0125, "Epic": 0.02, "Legendary": 0.03, "Mythic": 0.05, "Exotic": 0.08 };
 
     const museumData = {
+
         "Common": [ { name: "Pyrite", buff: "cap", val: 0.05 }, { name: "Seashell", buff: "cap", val: 0.05 }, { name: "Copper", buff: "size", val: 0.04 }, { name: "Obsidian", buff: "size", val: 0.04 }, { name: "Amethyst", buff: "dig", val: 0.05 }, { name: "Blue Ice", buff: "dig", val: 0.05 }, { name: "Platinum", buff: "dig", val: 0.05 }, { name: "Pearl", buff: "spd", val: 0.05 }, { name: "Silver", buff: "spd", val: 0.05 }, { name: "Gold", buff: "sell", val: 0.05 } ],
+
         "Uncommon": [ { name: "Coral", buff: "cap", val: 0.08 }, { name: "Topaz", buff: "cap", val: 0.08 }, { name: "Zircon", buff: "size", val: 0.05 }, { name: "Rock Candy", buff: "size", val: 0.05 }, { name: "Neodymium", buff: "str", val: 0.08 }, { name: "Smoky Quartz", buff: "str", val: 0.08 }, { name: "Sapphire", buff: "dig", val: 0.08 }, { name: "Titanium", buff: "dig", val: 0.08 }, { name: "Malachite", buff: "mod", val: 0.08 }, { name: "Glowberry", buff: "sell", val: 0.08 }, { name: "Electrum", buff: "sell", val: 0.08 } ],
+
         "Rare": [ { name: "Peridot", buff: "luck", val: 0.13 }, { name: "Meteoric Iron", buff: "str", val: 0.13 }, { name: "Ruby", buff: "str", val: 0.13 }, { name: "Azuralite", buff: "dig", val: 0.13 }, { name: "Glacial Quartz", buff: "dig", val: 0.13 }, { name: "Lapis Lazuli", buff: "dig", val: 0.13 }, { name: "Gloomberry", buff: "dig", val: 0.13 }, { name: "Jade", buff: "mod", val: 0.13 }, { name: "Onyx", buff: "mod", val: 0.13 }, { name: "Diopside", buff: "mod", val: 0.13 }, { name: "Amber", buff: "sell", val: 0.13 }, { name: "Pyrelith", buff: "sell", val: 0.13 }, { name: "Candy Cane", buff: "size", val: 0.09 }, { name: "Silver Clamshell", buff: "spd", val: 0.13 } ],
+
         "Epic": [ { name: "Emerald", buff: "luck", val: 0.20 }, { name: "Ammonite Fossil", buff: "cap", val: 0.20 }, { name: "Golden Pearl", buff: "cap", val: 0.20 }, { name: "Osmium", buff: "size", val: 0.20 }, { name: "Ashvein", buff: "size", val: 0.14 }, { name: "Bone", buff: "size", val: 0.14 }, { name: "Mercury", buff: "str", val: 0.20 }, { name: "Aurorite", buff: "dig", val: 0.20 }, { name: "Borealite", buff: "dig", val: 0.20 }, { name: "Cobalt", buff: "dig", val: 0.20 }, { name: "Iridium", buff: "dig", val: 0.20 }, { name: "Lightshard", buff: "dig", val: 0.20 }, { name: "Moonstone", buff: "spd", val: 0.20 }, { name: "Opal", buff: "spd", val: 0.20 }, { name: "Glowmoss", buff: "mod", val: 0.20 }, { name: "Pyronium", buff: "sell", val: 0.20 } ],
+
         "Legendary": [ { name: "Diamond", buff: "luck", val: 0.30 }, { name: "Catseye", buff: "cap", val: 0.30 }, { name: "Firefly Stone", buff: "cap", val: 0.30 }, { name: "Luminum", buff: "cap", val: 0.30 }, { name: "Volcanic Key", buff: "size", val: 0.21 }, { name: "Fire Opal", buff: "size", val: 0.21 }, { name: "Cinnabar", buff: "size", val: 0.21 }, { name: "Dragon Bone", buff: "size", val: 0.21 }, { name: "Rose Gold", buff: "str", val: 0.30 }, { name: "Aetherite", buff: "dig", val: 0.30 }, { name: "Aquamarine", buff: "dig", val: 0.30 }, { name: "Lost Soul", buff: "dig", val: 0.30 }, { name: "Bismuth", buff: "dig", val: 0.30 }, { name: "Gloomcap", buff: "dig", val: 0.30 }, { name: "Starshine", buff: "dig_spd", val: 0.15 }, { name: "Specterite", buff: "spd", val: 0.30 }, { name: "Peppermint Prism", buff: "mod", val: 0.30 }, { name: "Uranium", buff: "mod", val: 0.30 }, { name: "Radium", buff: "mod", val: 0.30 }, { name: "Tourmaline", buff: "sell", val: 0.30 }, { name: "Palladium", buff: "sell", val: 0.30 } ],
+
         "Mythic": [ { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] }, { name: "Inferlume", buff: "luck", val: 0.50 }, { name: "Pink Diamond", buff: "luck", val: 0.50 }, { name: "Chrysoberyl", buff: "luck", val: 0.50 }, { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 }, { name: "Vortessence", buff: "cap", val: 0.50 }, { name: "Painite", buff: "size", val: 0.35 }, { name: "Star Garnet", buff: "size", val: 0.35 }, { name: "Red Beryl", buff: "size", val: 0.35 }, { name: "Volcanic Core", buff: "size_dig", val: [0.2, 0.25] }, { name: "Frostshard", buff: "dig_str", val: 0.50 }, { name: "Mythril", buff: "str", val: 0.50 }, { name: "Radiant Gold", buff: "sell", val: 0.50 } ],
+
         "Exotic": [ { name: "Vineheart", buff: "luck", val: 0.80 }, { name: "Voidstone", buff: "luck_cap", val: 0.40 }, { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 }, { name: "Eternium", buff: "luck_spd_dig", val: 0.32 }, { name: "Dinosaur Skull", buff: "size_sell", val: [0.32, 0.4] }, { name: "Pumpkin Soul", buff: "size", val: 0.56 }, { name: "Bloodstone", buff: "size", val: 0.56 }, { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] }, { name: "Astral Spore", buff: "dig", val: 0.80 }, { name: "Umbrite", buff: "dig_spd", val: 0.40 }, { name: "Adamantine", buff: "mod", val: 0.80 } ]
+
     };
 
     function toggleMuseum() {
@@ -313,7 +322,6 @@ const itemData = {
 
     function initRings() {
         const container = document.getElementById('ring-container');
-        if (!container) return;
         container.innerHTML = ""; 
         for(let i=1; i<=8; i++) {
             const div = document.createElement('div');
@@ -330,7 +338,7 @@ const itemData = {
         const ringSelects = Array.from({length: 8}, (_, i) => document.getElementById(`ring-${i+1}`));
         const championCount = ringSelects.filter(s => s && s.value === 'champions').length;
         if (championCount > 1) {
-            alert("You can only equip one Ring of Champions at a time!");
+            alert("One Ring of Champions only!");
             document.getElementById(`ring-${changedIndex}`).value = "none";
         }
         calculate();
@@ -338,11 +346,8 @@ const itemData = {
 
     function renderMuseum() {
         const container = document.getElementById('museum-container');
-        if (!container) return;
-        container.innerHTML = "";
         for (const [rarity, ores] of Object.entries(museumData)) {
             const section = document.createElement('div');
-            section.className = 'museum-rarity';
             section.innerHTML = `<h3 class="${rarity}">${rarity}</h3><div class="ore-grid" id="grid-${rarity}"></div>`;
             container.appendChild(section);
             const grid = document.getElementById(`grid-${rarity}`);
@@ -357,58 +362,47 @@ const itemData = {
 
     function calculate() {
         let L = 803, C = 25, S = 100, Str = 1;
-// Start multiC at 1.05 to account for that hidden 5% bonus
-let multiL = 1.0, multiC = 1.05, multiS = 1.0, multiStr = 1.0;
+        let multiL = 0, multiC = 0.05, multiS = 0, multiStr = 0; // Starts at 0, using 1 + multi logic
 
         const pan = pans[document.getElementById('equip-pan').value];
         if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
 
-        const enc = document.getElementById('pan-enchant').value;
-        if (enc === 'glowing') multiS += 0.25;
-        if (enc === 'cosmic') { C += 50; Str += 3; }
+        const panEnc = document.getElementById('pan-enchant').value;
+        if (panEnc === 'glowing') multiS += 0.25;
+        if (panEnc === 'cosmic') { C += 50; Str += 3; }
 
-const neck = itemData.neck[document.getElementById('slot-neck').value];
-if (neck) { L += neck.luck; S += (neck.spd / 100 || 0); C += (neck.cap || 0); }
+        const shovel = document.getElementById('shovel-enchant').value;
+        if (shovel === 'non_euclidian') multiC += 0.5; // Fixed 0.5 as requested
+        if (shovel === 'rhythmic') multiL += 0.3;
+
+        const neck = itemData.neck[document.getElementById('slot-neck').value];
+        if (neck) { L += neck.luck; C += neck.cap; S += neck.spd; }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd / 100 || 0); }
+        if (charm) { L += charm.luck; C += charm.cap; S += charm.spd; }
+
         for(let i=1; i<=8; i++) {
-            const ringElement = document.getElementById(`ring-${i}`);
-            if (!ringElement) continue;
-            const ringKey = ringElement.value;
-            const ring = itemData.rings[ringKey];
+            const ring = itemData.rings[document.getElementById(`ring-${i}`).value];
             if (ring) {
                 L += ring.luck; C += ring.cap; Str += ring.str;
-                if (ringKey === 'otherworldly') multiS += ring.spd;
+                if (ring.name === "Otherworldly Ring") multiS += ring.spd;
                 else S += ring.spd;
             }
         }
-// Shovel Enchants
-        const shovel = document.getElementById('shovel-enchant').value;
-        if (shovel === 'non_euclidian') multiC += 0.7;
-        if (shovel === 'rhythmic') multiL += 0.3;
-        
+
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
         if (document.getElementById('runes-luck').checked) multiL += 1.2;
         if (document.getElementById('runes-spd').checked) multiS += 0.25;
-        if (document.getElementById('prospector-mvp').checked) {
-            multiL += 0.15;
-            multiC += 0.15;
-        }
-
+        if (document.getElementById('prospector-mvp').checked) { multiL += 0.15; multiC += 0.15; }
         if (document.getElementById('totem-luck').checked) multiL += 1.0;
         if (document.getElementById('totem-str').checked) multiStr += 1.0;
-        if (document.getElementById('totem-lumi').checked) {
-            multiC += 0.5;
-            multiS += 0.5;
-        }
+        if (document.getElementById('totem-lumi').checked) { multiC += 0.5; multiS += 0.5; }
 
         document.querySelectorAll('.museum-box:checked').forEach(box => {
             const r = box.dataset.rarity;
             const b = box.dataset.buff;
             const v = JSON.parse(box.dataset.val);
             multiL += voidtornBonus[r]; multiC += voidtornBonus[r];
-
             if (b.includes('luck')) multiL += Array.isArray(v) ? v[0] : v;
             if (b.includes('cap')) multiC += Array.isArray(v) ? v[0] : v;
             if (b.includes('str')) multiStr += Array.isArray(v) ? v[1] : v;
@@ -433,12 +427,7 @@ if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd / 100 || 0)
         document.getElementById('result-rps').innerText = rps.toFixed(2);
     }
 
-    // Initialize
-    window.onload = function() {
-        initRings();
-        renderMuseum();
-        calculate();
-    };
+    window.onload = () => { initRings(); renderMuseum(); calculate(); };
 </script>
 </body>
 </html>
