@@ -207,7 +207,7 @@
         <button class="open-museum-btn" onclick="toggleMuseum()">Open Museum</button>
 
         <div style="margin-top:20px; padding:10px; background:#111; border-radius:5px; font-size:0.75rem; color:#666;">
-            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 125
+            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 0.45
         </div>
     </div>
 
@@ -357,8 +357,7 @@ const itemData = {
 
     function calculate() {
         let L = 803, C = 25, S = 100, Str = 1;
-// Start multiC at 1.05 to account for that hidden 5% bonus
-let multiL = 1.0, multiC = 1.05, multiS = 1.0, multiStr = 1.0;
+        let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
         if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
