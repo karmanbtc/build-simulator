@@ -184,7 +184,14 @@
                 <option value="cosmic">Cosmic (+50 Cap, +3 Shake Str)</option>
             </select>
         </div>
-
+<h3>Shovel Enchant</h3>
+        <div class="input-group">
+            <select id="shovel-enchant" onchange="calculate()">
+                <option value="none">No Enchant</option>
+                <option value="non_euclidian">Non-Euclidian (+0.5x Cap)</option>
+                <option value="rhythmic">Rhythmic (+0.3x Luck)</option>
+            </select>
+        </div>
         <h3>Global Modifiers & Totems</h3>
         <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
@@ -349,7 +356,7 @@ const itemData = {
     }
 
     function calculate() {
-        let L = 803, C = 25, S = 0.45, Str = 1;
+        let L = 803, C = 25, S = 100, Str = 1;
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
@@ -376,7 +383,11 @@ const neck = itemData.neck[document.getElementById('slot-neck').value];
                 else S += ring.spd;
             }
         }
-
+// Shovel Enchants
+        const shovel = document.getElementById('shovel-enchant').value;
+        if (shovel === 'non_euclidian') multiC += 0.5;
+        if (shovel === 'rhythmic') multiL += 0.3;
+        
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
         if (document.getElementById('runes-luck').checked) multiL += 1.2;
         if (document.getElementById('runes-spd').checked) multiS += 0.25;
