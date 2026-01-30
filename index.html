@@ -185,31 +185,43 @@
         margin-top: 15px;
     }
 .credits-box {
-    width: 100%;
-    max-width: 1400px;
-    margin: 60px auto 20px auto; /* Large top margin pushes it away from the content */
-    padding: 30px 20px;
-    text-align: center;
-    border-top: 1px solid #2a2a2a; /* Creates a nice separation line */
-    color: #666; /* Subtle grey so it's not distracting */
-    clear: both; /* Ensures it stays below floated or absolute elements */
-}
+        width: 100%;
+        max-width: 1400px;
+        margin: 60px auto 20px auto; 
+        padding: 30px 20px;
+        text-align: center;
+        border-top: 1px solid #2a2a2a; 
+        color: #666; 
+        clear: both; 
+    }
 
-.credits-box h3 {
-    color: var(--accent);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    border: none; /* In case your global h3 has a border */
-}
+    .credits-box h3 {
+        color: var(--accent);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        border: none; 
+    }
 
-.credits-box strong {
-    color: #fff; /* Highlights your name */
-}
+    .credits-box strong {
+        color: #fff;
+    }
 </style>
 </head>
+<body>
+    <div id="museum-overlay">
+        <div class="museum-content">
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <h2>Museum Collection (All Voidtorn Applied)</h2>
+                <button onclick="toggleMuseum()" style="background:red; color:white; border:none; padding:5px 15px; cursor:pointer; border-radius:5px;">Close</button>
+            </div>
+            <div id="museum-container"></div>
+        </div>
+    </div>
+
     <div class="container">
+        
         </div> <div class="credits-box">
         <h3>Project Credits</h3>
         <p>Developed by <strong>karman (@.karman.)</strong></p>
@@ -221,16 +233,6 @@
     </script>
 </body>
 </html>
-
-<div id="museum-overlay">
-    <div class="museum-content">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h2>Museum Collection (All Voidtorn Applied)</h2>
-            <button onclick="toggleMuseum()" style="background:red; color:white; border:none; padding:5px 15px; cursor:pointer; border-radius:5px;">Close</button>
-        </div>
-        <div id="museum-container"></div>
-    </div>
-</div>
 
 <div class="container">
     <div class="panel">
