@@ -13,30 +13,33 @@
         --border: #2a2a2a;
     }
 
+    /* Universal Reset */
     * {
         box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+        background-color: var(--bg-color) !important;
+        color: var(--text-main);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, sans-serif;
-        background-color: var(--bg-color); /* Forces dark background */
-        color: var(--text-main);
-        margin: 0;
         padding: 15px;
-        line-height: 1.4;
     }
 
-    /* Layout Logic */
+    /* Layout */
     .container {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        max-width: 1600px;
+        max-width: 1400px;
         margin: 0 auto;
     }
 
-    @media (min-width: 1200px) {
+    @media (min-width: 1024px) {
         .container {
             display: grid;
             grid-template-columns: 350px 1fr 350px;
@@ -44,115 +47,123 @@
     }
 
     .panel {
-        background: var(--panel-bg); /* Solid color prevents see-through overlap */
+        background-color: var(--panel-bg);
         padding: 20px;
         border-radius: 12px;
         border: 1px solid var(--border);
         position: relative;
-        z-index: 1; /* Keeps standard panels behind the sticky one */
     }
 
-    /* MOBILE "FINAL OUTPUT" STICKY FIX */
-    @media (max-width: 600px) {
-        /* This targets the panel containing the results */
-        .container > .panel:last-of-type {
-            order: -1; /* Moves results to top */
-            position: sticky;
-            top: 0;
-            z-index: 100; /* Stays on top of everything */
-            background: #1a1a1a; 
-            border-bottom: 2px solid var(--accent);
-            border-radius: 0 0 12px 12px;
-            margin: -15px -15px 20px -15px; /* Full width bleed */
-            padding: 15px;
-        }
-
-        /* Prevent the duplicate "Final Output" inner panel from breaking things */
-        .panel .panel {
-            background: transparent;
-            border: none;
-            padding: 0;
-            margin: 0;
-        }
+    /* Museum Overlay Fixes */
+    #museum-overlay {
+        display: none; /* Ensures it stays closed until clicked */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        z-index: 9999;
+        padding: 20px;
+        overflow-y: auto;
     }
 
-    /* Checkbox Fix (The "Blobs") */
+    .museum-content {
+        background-color: var(--panel-bg);
+        border: 1px solid var(--accent);
+        border-radius: 15px;
+        padding: 25px;
+        max-width: 1000px;
+        margin: 0 auto;
+        color: var(--text-main);
+    }
+
+    /* Fixing the "Bad Colors" / Invisible Text */
+    .museum-content h2, 
+    .museum-content h3, 
+    .museum-content label {
+        color: #fff !important;
+    }
+
+    /* Checkbox Fix (The Blobs) */
     .ore-toggle {
         display: flex;
         align-items: center;
         background: #222;
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 5px;
         cursor: pointer;
-        font-size: 0.85rem;
+        color: #fff;
     }
 
     input[type="checkbox"] {
         appearance: none;
         -webkit-appearance: none;
-        width: 22px;
-        height: 22px;
+        width: 18px;
+        height: 18px;
         border: 2px solid var(--accent);
-        border-radius: 4px;
-        margin-right: 12px;
+        border-radius: 3px;
+        background: #111;
+        margin-right: 10px;
         flex-shrink: 0;
         position: relative;
-        background: #111;
     }
 
     input[type="checkbox"]:checked {
-        background: var(--accent);
+        background-color: var(--accent);
     }
 
     input[type="checkbox"]:checked::after {
         content: '✓';
         position: absolute;
-        top: 50%; left: 50%;
+        top: 50%;
+        left: 50%;
         transform: translate(-50%, -50%);
         color: #000;
         font-weight: bold;
+        font-size: 12px;
     }
 
-    /* Input Styling */
-    select {
+    /* Form Elements */
+    select, input {
         width: 100%;
-        padding: 12px;
-        background: #2a2a2a;
+        background: #222;
         border: 1px solid #444;
-        color: white;
-        border-radius: 8px;
-        font-size: 16px; /* Prevents auto-zoom */
-        margin: 5px 0 15px;
+        color: #fff;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 16px;
     }
 
-    /* Grid for Totems/Rings */
-    .equipment-grid, .ring-slots-grid {
-        display: grid;
-        gap: 10px;
+    /* Mobile Sticky Results */
+    @media (max-width: 768px) {
+        .panel:last-child {
+            order: -1;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 10px;
+            background-color: #1a1a1a;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
     }
 
-    .equipment-grid { grid-template-columns: 1fr 1fr; }
-    .ring-slots-grid { grid-template-columns: repeat(2, 1fr); }
+    /* Rarity Styling */
+    .Common { color: #cccccc !important; }
+    .Uncommon { color: #1fd13a !important; }
+    .Rare { color: #0059ff !important; }
+    .Epic { color: #b11ae8 !important; }
+    .Legendary { color: #ffff00 !important; }
+    .Mythic { color: #cf0064 !important; }
+    .Exotic { color: #ff0011 !important; }
 
-    /* Rarity & Text */
-    h2 { color: var(--accent); font-size: 1rem; margin-bottom: 10px; }
-    .stat-card {
-        display: flex;
-        justify-content: space-between;
-        padding: 5px 0;
-        border-bottom: 1px solid #333;
+    .big-result h1 {
+        font-size: 2.5rem;
+        margin: 10px 0;
+        color: #fff;
     }
-
-    .big-result {
-        background: #000;
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid var(--accent);
-        margin-top: 10px;
-    }
-
-    .big-result h1 { font-size: 2.5rem; margin: 0; }
 </style>
 </head>
 <body>
