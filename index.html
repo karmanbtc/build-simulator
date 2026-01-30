@@ -212,6 +212,7 @@
                 <select id="slot-neck" onchange="calculate()">
                     <option value="none">Empty</option>
                     <option value="witch_hat">Witch Hat</option>
+                    <option value="timelock_soul">Timelock Soul</option>
                 </select>
             </div>
             <div class="slot">
@@ -259,6 +260,7 @@
         },
         neck: {
             witch_hat: { luck: 1760, spd: 44 }
+            timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         }
     };
 
@@ -358,7 +360,7 @@
         if (neck) { L += neck.luck; S += neck.spd; }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-        if (charm) { L += charm.luck; C += charm.cap; }
+        if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd || 0); }
 
         for(let i=1; i<=8; i++) {
             const ringKey = document.getElementById(`ring-${i}`).value;
