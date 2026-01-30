@@ -397,19 +397,20 @@ if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
             if (!ringElement) continue;
             const ringKey = ringElement.value;
             const ring = itemData.rings[ringKey];
-// Inside your ring loop (where you process each slot 1-8)
+// Inside your ring loop (Line 383 area)
 if (ring) {
     L += ring.luck;
     C += ring.cap;
     Str += ring.str;
     
-    // Check if the ring is 'otherworldly' (multiplier) or standard (base)
+    // Most rings add to BASE speed, 'otherworldly' adds to MULTI
     if (rKey === 'otherworldly') {
         multiS += ring.spd; 
     } else {
         S += (ring.spd || 0); // Adds directly to base S
     }
 }
+
 // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
         if (shovel === 'non_euclidian') multiC += 0.5;
@@ -442,10 +443,12 @@ if (ring) {
             if (b.includes('spd')) multiS += Array.isArray(v) ? v[2] : v;
         });
 
-        const totalL = L * (1 + multiL);
-        const totalC = C * (1 + multiC);
-        const totalS = S * (1 + multiS);
-        const totalStr = Str * (1 + multiStr);
+    // Move this to the VERY BOTTOM of the calculate function
+    // 6. FINAL TOTALS
+    const totalL = L * (1 + multiL);
+    const totalC = C * (1 + multiC);
+    const totalStr = Str * (1 + multiStr);
+    const totalS = S * (1 + multiS); // This will now include Shovel, Runes, and Rings
 
         let r = 1;
         for (let entry of speedTable) { if (totalS >= entry.s) r = entry.r; }
@@ -463,6 +466,12 @@ document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2
 document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
 document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
 document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";
+
+    // Update UI
+    document.getElementById('total-luck').innerText = Math.floor(totalL).toLocaleString();
+    document.getElementById('total-cap').innerText = Math.floor(totalC).toLocaleString();
+    document.getElementById('total-spd').innerText = totalS.toFixed(2);
+} // <--- The function should end here        
     }
 
     // Initialize
