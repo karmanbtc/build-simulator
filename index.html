@@ -184,24 +184,28 @@
         text-align: center;
         margin-top: 15px;
     }
-    .credits-box {
+.credits-box {
     width: 100%;
     max-width: 1400px;
-    margin: 40px auto;
-    padding: 20px;
+    margin: 60px auto 20px auto; /* Large top margin pushes it away from the content */
+    padding: 30px 20px;
     text-align: center;
-    border-top: 1px solid #2a2a2a;
-    color: #666; /* Subtle grey */
+    border-top: 1px solid #2a2a2a; /* Creates a nice separation line */
+    color: #666; /* Subtle grey so it's not distracting */
+    clear: both; /* Ensures it stays below floated or absolute elements */
 }
 
 .credits-box h3 {
     color: var(--accent);
     font-size: 0.9rem;
-    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    border: none; /* In case your global h3 has a border */
 }
 
 .credits-box strong {
-    color: #fff;
+    color: #fff; /* Highlights your name */
 }
 </style>
 </head>
