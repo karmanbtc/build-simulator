@@ -372,10 +372,10 @@ const itemData = {
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
 const neck = itemData.neck[document.getElementById('slot-neck').value];
-        if (neck) { L += neck.luck; multiS += (neck.spd / 100 || 0); C += (neck.cap || 0); }
+if (neck) { L += neck.luck; multiS += (neck.spd / 100 || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-       if (charm) { L += charm.luck; C += (charm.cap || 0); multiS += (charm.spd / 100 || 0); }
+if (charm) { L += charm.luck; C += (charm.cap || 0); multiS += (charm.spd / 100 || 0); }
 
         for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
