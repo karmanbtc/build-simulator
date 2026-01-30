@@ -208,16 +208,16 @@
         <h2>Equipped Gear</h2>
         <div class="equipment-grid">
             <div class="slot">
-                <label>Necklace</label>
-                <select id="slot-neck" onchange="calculate()">
+                <label>Charm</label>
+                <select id="slot-charm" onchange="calculate()">
                     <option value="none">Empty</option>
                     <option value="witch_hat">Witch Hat</option>
                     <option value="timelock_soul">Timelock Soul</option>
                 </select>
             </div>
             <div class="slot">
-                <label>Charm</label>
-                <select id="slot-charm" onchange="calculate()">
+                <label>Necklace</label>
+                <select id="slot-neck" onchange="calculate()">
                     <option value="none">Empty</option>
                     <option value="venomshank">Venomshank</option>
                     <option value="santa_bag">Santa's Bag</option>
@@ -254,13 +254,13 @@
             umbrite: { name: "Umbrite Ring", luck: 392, cap: 160, str: 18, spd: 0 },
             champions: { name: "Ring of Champions", luck: 880, cap: 720, str: 88, spd: 160, unique: true }
         },
-        charms: {
+        neck: {
             venomshank: { luck: 2080, cap: 0, spd: 0 },
             santa_bag: { luck: 1080, cap: 880, spd: 0 },
-            timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         },
-        neck: {
+        charms: {
             witch_hat: { luck: 1760, spd: 44 }
+            timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         }
     };
 
