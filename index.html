@@ -442,12 +442,21 @@ const itemData = {
             if (bType.includes('spd')) multiS += Array.isArray(vVal) ? vVal[2] : vVal;
         });
 
-        // 6. FINAL TOTALS
-        const totalL = L * (1 + multiL);
-        const totalC = C * (1 + multiC);
-        const totalStr = Str * (1 + multiStr);
-        const totalS = S * (1 + multiS); 
+      // 6. FINAL TOTALS
+const totalL = L * (1 + multiL);
+const totalC = C * (1 + multiC);
+const totalStr = Str * (1 + multiStr);
 
+// --- NEW SPEED LOGIC ---
+// 1. Calculate multiplied speed (Base 100 + Pan + Rings + Neck + Charm)
+let finalS = S * (1 + multiS); 
+
+// 2. Add flat bonuses AFTER the multiplication
+if (document.getElementById('runes-spd').checked) finalS += 25; 
+if (document.getElementById('totem-lumi').checked) finalS += 50;
+
+// Use this new finalS for the rest of the calculations
+const totalS = finalS;
         // RPS Calculation
         let rVal = 1;
         for (let entry of speedTable) { if (totalS >= entry.s) rVal = entry.r; }
