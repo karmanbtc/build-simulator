@@ -273,7 +273,8 @@ const itemData = {
         rings: {
             purifying: { name: "Purifying Ring", luck: 144, cap: 176, str: 48, spd: 0 },
             vortex: { name: "Vortex Ring", luck: 248, cap: 520, str: 18, spd: 0 },
-            otherworldly: { name: "Otherworldly Ring", luck: 600, cap: 0, str: 0, spd: 0.35 },
+            // UPDATED: Fixed Otherworldly to 35 base speed
+            otherworldly: { name: "Otherworldly Ring", luck: 600, cap: 0, str: 0, spd: 35 }, 
             umbrite: { name: "Umbrite Ring", luck: 392, cap: 160, str: 18, spd: 0 },
             champions: { name: "Ring of Champions", luck: 880, cap: 720, str: 88, spd: 160, unique: true }
         },
@@ -375,40 +376,35 @@ const itemData = {
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
-if (pan) { 
-    L += pan.luck; 
-    C += pan.cap; 
-    S += (pan.spd || 0); // Adds directly to base S
-    Str += pan.str; 
-}
+        if (pan) { 
+            L += pan.luck; 
+            C += pan.cap; 
+            S += (pan.spd || 0); 
+            Str += pan.str; 
+        }
 
         const enc = document.getElementById('pan-enchant').value;
-if (enc === 'glowing') S += 25; // Adds 25 flat to base S instead of multiS
+        if (enc === 'glowing') S += 25; 
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
-const neck = itemData.neck[document.getElementById('slot-neck').value];
-if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
+        const neck = itemData.neck[document.getElementById('slot-neck').value];
+        if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
+        if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
 
-for(let i=1; i<=8; i++) {
+        for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
             if (!ringElement) continue;
             const ringKey = ringElement.value;
             const ring = itemData.rings[ringKey];
-
             if (ring) {
                 L += ring.luck;
                 C += ring.cap;
                 Str += ring.str;
-                
-                // Add ALL ring speed (including Otherworldly) to the base S
                 S += (ring.spd || 0); 
             }
-        }
-        } // Close the loop here
-// ... (Ring Loop ends here) ...
+        } 
 
         // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
@@ -434,45 +430,43 @@ for(let i=1; i<=8; i++) {
 
         // Museum Logic
         document.querySelectorAll('.museum-box:checked').forEach(box => {
-            const r = box.dataset.rarity;
-            const b = box.dataset.buff;
-            const v = JSON.parse(box.dataset.val);
-            multiL += voidtornBonus[r]; 
-            multiC += voidtornBonus[r];
+            const rRarity = box.dataset.rarity;
+            const bType = box.dataset.buff;
+            const vVal = JSON.parse(box.dataset.val);
+            multiL += voidtornBonus[rRarity]; 
+            multiC += voidtornBonus[rRarity];
 
-            if (b.includes('luck')) multiL += Array.isArray(v) ? v[0] : v;
-            if (b.includes('cap')) multiC += Array.isArray(v) ? v[0] : v;
-            if (b.includes('str')) multiStr += Array.isArray(v) ? v[1] : v;
-            if (b.includes('spd')) multiS += Array.isArray(v) ? v[2] : v;
+            if (bType.includes('luck')) multiL += Array.isArray(vVal) ? vVal[0] : vVal;
+            if (bType.includes('cap')) multiC += Array.isArray(vVal) ? vVal[0] : vVal;
+            if (bType.includes('str')) multiStr += Array.isArray(vVal) ? vVal[1] : vVal;
+            if (bType.includes('spd')) multiS += Array.isArray(vVal) ? vVal[2] : vVal;
         });
 
-        // 6. FINAL TOTALS (Applied once at the end)
+        // 6. FINAL TOTALS
         const totalL = L * (1 + multiL);
         const totalC = C * (1 + multiC);
         const totalStr = Str * (1 + multiStr);
         const totalS = S * (1 + multiS); 
 
         // RPS Calculation
-        let r = 1;
-        for (let entry of speedTable) { if (totalS >= entry.s) r = entry.r; }
-        const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (r * totalStr)) + 2.5);
+        let rVal = 1;
+        for (let entry of speedTable) { if (totalS >= entry.s) rVal = entry.r; }
+        const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (rVal * totalStr)) + 2.5);
 
         // Update UI Displays
         document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
         document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
         document.getElementById('stat-str').innerText = totalStr.toFixed(1);
         document.getElementById('stat-spd').innerText = totalS.toFixed(1);
-        document.getElementById('stat-r').innerText = r.toFixed(2);
+        document.getElementById('stat-r').innerText = rVal.toFixed(2);
         document.getElementById('result-rps').innerText = rps.toFixed(2);
 
-        // Update Multiplier Displays
         document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
         document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
         document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
         document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";    
     }
 
-    // Initialize
     window.onload = function() {
         initRings();
         renderMuseum();
