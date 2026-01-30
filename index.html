@@ -244,8 +244,23 @@
         <div class="stat-card"><span>Total Capacity:</span> <span id="stat-cap">0</span></div>
         <div class="stat-card"><span>Total Shake Str:</span> <span id="stat-str">0</span></div>
         <div class="stat-card"><span>Total Shake Spd:</span> <span id="stat-spd">0</span></div>
-        <div class="stat-card"><span>Breakpoint (r):</span> <span id="stat-r">0</span></div>
-
+        <div class="stat-card"><span>Shakes Per Second (r):</span> <span id="stat-r">0</span></div>
+<div class="stat-item">
+    <span>Luck Multi:</span>
+    <span id="multi-luck-display">1.00x</span>
+</div>
+<div class="stat-item">
+    <span>Cap Multi:</span>
+    <span id="multi-cap-display">1.00x</span>
+</div>
+<div class="stat-item">
+    <span>Spd Multi:</span>
+    <span id="multi-spd-display">1.00x</span>
+</div>
+<div class="stat-item">
+    <span>Str Multi:</span>
+    <span id="multi-str-display">1.00x</span>
+</div>
         <div class="big-result">
             <div style="font-size:0.75rem; color:var(--accent); text-transform:uppercase;">Rerolls Per Second</div>
             <h1 id="result-rps">0.00</h1>
@@ -436,6 +451,11 @@ if (charm) { L += charm.luck; C += (charm.cap || 0); multiS += (charm.spd / 100 
         document.getElementById('stat-spd').innerText = totalS.toFixed(1);
         document.getElementById('stat-r').innerText = r.toFixed(2);
         document.getElementById('result-rps').innerText = rps.toFixed(2);
+        // Display the multipliers (formatted to 2 decimal places)
+document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
+document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
+document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
+document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";
     }
 
     // Initialize
