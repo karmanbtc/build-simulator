@@ -398,16 +398,17 @@ for(let i=1; i<=8; i++) {
             const ringKey = ringElement.value; // You defined 'ringKey' here...
             const ring = itemData.rings[ringKey];
 
-            if (ring) {
+if (ring) {
                 L += ring.luck;
                 C += ring.cap;
                 Str += ring.str;
                 
-                // FIXED: Changed 'rKey' to 'ringKey' to match line 314
                 if (ringKey === 'otherworldly') {
-                    multiS += (ring.spd || 0); 
+                    // This adds 0.35 to the multiplier bucket
+                    multiS += 0.35; 
                 } else {
-                    S += (ring.spd || 0); // Adds standard rings to base S
+                    // Standard rings like Champion add flat values (e.g., 160) to base
+                    S += (ring.spd || 0); 
                 }
             }
         } // Close the loop here
