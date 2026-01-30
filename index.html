@@ -358,15 +358,60 @@ const itemData = {
 
     const voidtornBonus = { "Common": 0.005, "Uncommon": 0.0075, "Rare": 0.0125, "Epic": 0.02, "Legendary": 0.03, "Mythic": 0.05, "Exotic": 0.08 };
 
-    const museumData = {
-        "Common": [ { name: "Pyrite", buff: "cap", val: 0.05 }, { name: "Seashell", buff: "cap", val: 0.05 }, { name: "Copper", buff: "size", val: 0.04 }, { name: "Obsidian", buff: "size", val: 0.04 }, { name: "Amethyst", buff: "dig", val: 0.05 }, { name: "Blue Ice", buff: "dig", val: 0.05 }, { name: "Platinum", buff: "dig", val: 0.05 }, { name: "Pearl", buff: "spd", val: 0.05 }, { name: "Silver", buff: "spd", val: 0.05 }, { name: "Gold", buff: "sell", val: 0.05 } ],
-        "Uncommon": [ { name: "Coral", buff: "cap", val: 0.08 }, { name: "Topaz", buff: "cap", val: 0.08 }, { name: "Zircon", buff: "size", val: 0.05 }, { name: "Rock Candy", buff: "size", val: 0.05 }, { name: "Neodymium", buff: "str", val: 0.08 }, { name: "Smoky Quartz", buff: "str", val: 0.08 }, { name: "Sapphire", buff: "dig", val: 0.08 }, { name: "Titanium", buff: "dig", val: 0.08 }, { name: "Malachite", buff: "mod", val: 0.08 }, { name: "Glowberry", buff: "sell", val: 0.08 }, { name: "Electrum", buff: "sell", val: 0.08 } ],
-        "Rare": [ { name: "Peridot", buff: "luck", val: 0.13 }, { name: "Meteoric Iron", buff: "str", val: 0.13 }, { name: "Ruby", buff: "str", val: 0.13 }, { name: "Azuralite", buff: "dig", val: 0.13 }, { name: "Glacial Quartz", buff: "dig", val: 0.13 }, { name: "Lapis Lazuli", buff: "dig", val: 0.13 }, { name: "Gloomberry", buff: "dig", val: 0.13 }, { name: "Jade", buff: "mod", val: 0.13 }, { name: "Onyx", buff: "mod", val: 0.13 }, { name: "Diopside", buff: "mod", val: 0.13 }, { name: "Amber", buff: "sell", val: 0.13 }, { name: "Pyrelith", buff: "sell", val: 0.13 }, { name: "Candy Cane", buff: "size", val: 0.09 }, { name: "Silver Clamshell", buff: "spd", val: 0.13 } ],
-        "Epic": [ { name: "Emerald", buff: "luck", val: 0.20 }, { name: "Ammonite Fossil", buff: "cap", val: 0.20 }, { name: "Golden Pearl", buff: "cap", val: 0.20 }, { name: "Osmium", buff: "size", val: 0.20 }, { name: "Ashvein", buff: "size", val: 0.14 }, { name: "Bone", buff: "size", val: 0.14 }, { name: "Mercury", buff: "str", val: 0.20 }, { name: "Aurorite", buff: "dig", val: 0.20 }, { name: "Borealite", buff: "dig", val: 0.20 }, { name: "Cobalt", buff: "dig", val: 0.20 }, { name: "Iridium", buff: "dig", val: 0.20 }, { name: "Lightshard", buff: "dig", val: 0.20 }, { name: "Moonstone", buff: "spd", val: 0.20 }, { name: "Opal", buff: "spd", val: 0.20 }, { name: "Glowmoss", buff: "mod", val: 0.20 }, { name: "Pyronium", buff: "sell", val: 0.20 } ],
-        "Legendary": [ { name: "Diamond", buff: "luck", val: 0.30 }, { name: "Catseye", buff: "cap", val: 0.30 }, { name: "Firefly Stone", buff: "cap", val: 0.30 }, { name: "Luminum", buff: "cap", val: 0.30 }, { name: "Volcanic Key", buff: "size", val: 0.21 }, { name: "Fire Opal", buff: "size", val: 0.21 }, { name: "Cinnabar", buff: "size", val: 0.21 }, { name: "Dragon Bone", buff: "size", val: 0.21 }, { name: "Rose Gold", buff: "str", val: 0.30 }, { name: "Aetherite", buff: "dig", val: 0.30 }, { name: "Aquamarine", buff: "dig", val: 0.30 }, { name: "Lost Soul", buff: "dig", val: 0.30 }, { name: "Bismuth", buff: "dig", val: 0.30 }, { name: "Gloomcap", buff: "dig", val: 0.30 }, { name: "Starshine", buff: "dig_spd", val: 0.15 }, { name: "Specterite", buff: "spd", val: 0.30 }, { name: "Peppermint Prism", buff: "mod", val: 0.30 }, { name: "Uranium", buff: "mod", val: 0.30 }, { name: "Radium", buff: "mod", val: 0.30 }, { name: "Tourmaline", buff: "sell", val: 0.30 }, { name: "Palladium", buff: "sell", val: 0.30 } ],
-        "Mythic": [ { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] }, { name: "Inferlume", buff: "luck", val: 0.50 }, { name: "Pink Diamond", buff: "luck", val: 0.50 }, { name: "Chrysoberyl", buff: "luck", val: 0.50 }, { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 }, { name: "Vortessence", buff: "cap", val: 0.50 }, { name: "Painite", buff: "size", val: 0.35 }, { name: "Star Garnet", buff: "size", val: 0.35 }, { name: "Red Beryl", buff: "size", val: 0.35 }, { name: "Volcanic Core", buff: "size_dig", val: [0.2, 0.25] }, { name: "Frostshard", buff: "dig_str", val: 0.50 }, { name: "Mythril", buff: "str", val: 0.50 }, { name: "Radiant Gold", buff: "sell", val: 0.50 } ],
-        "Exotic": [ { name: "Vineheart", buff: "luck", val: 0.80 }, { name: "Voidstone", buff: "luck_cap", val: 0.40 }, { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 }, { name: "Eternium", buff: "luck_spd_dig", val: 0.32 }, { name: "Dinosaur Skull", buff: "size_sell", val: [0.32, 0.4] }, { name: "Pumpkin Soul", buff: "size", val: 0.56 }, { name: "Bloodstone", buff: "size", val: 0.56 }, { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] }, { name: "Astral Spore", buff: "dig", val: 0.80 }, { name: "Umbrite", buff: "dig_spd", val: 0.40 }, { name: "Adamantine", buff: "mod", val: 0.80 } ]
-    };
+const museumData = {
+    "Common": [
+        { name: "Pyrite", buff: "cap", val: 0.05 },
+        { name: "Seashell", buff: "cap", val: 0.05 },
+        { name: "Pearl", buff: "spd", val: 0.05 },
+        { name: "Silver", buff: "spd", val: 0.05 }
+    ],
+    "Uncommon": [
+        { name: "Coral", buff: "cap", val: 0.08 },
+        { name: "Topaz", buff: "cap", val: 0.08 },
+        { name: "Neodymium", buff: "str", val: 0.08 },
+        { name: "Smoky Quartz", buff: "str", val: 0.08 }
+    ],
+    "Rare": [
+        { name: "Peridot", buff: "luck", val: 0.13 },
+        { name: "Meteoric Iron", buff: "str", val: 0.13 },
+        { name: "Ruby", buff: "str", val: 0.13 },
+        { name: "Silver Clamshell", buff: "spd", val: 0.13 }
+    ],
+    "Epic": [
+        { name: "Emerald", buff: "luck", val: 0.20 },
+        { name: "Ammonite Fossil", buff: "cap", val: 0.20 },
+        { name: "Golden Pearl", buff: "cap", val: 0.20 },
+        { name: "Mercury", buff: "str", val: 0.20 },
+        { name: "Moonstone", buff: "spd", val: 0.20 },
+        { name: "Opal", buff: "spd", val: 0.20 }
+    ],
+    "Legendary": [
+        { name: "Diamond", buff: "luck", val: 0.30 },
+        { name: "Catseye", buff: "cap", val: 0.30 },
+        { name: "Firefly Stone", buff: "cap", val: 0.30 },
+        { name: "Luminum", buff: "cap", val: 0.30 },
+        { name: "Rose Gold", buff: "str", val: 0.30 },
+        { name: "Specterite", buff: "spd", val: 0.30 }
+    ],
+    "Mythic": [
+        { name: "Flarebloom", buff: "luck_size", val: [0.75, -0.5] },
+        { name: "Inferlume", buff: "luck", val: 0.50 },
+        { name: "Pink Diamond", buff: "luck", val: 0.50 },
+        { name: "Chrysoberyl", buff: "luck", val: 0.50 },
+        { name: "Prismara", buff: "luck_cap_str_dig", val: 0.25 },
+        { name: "Vortessence", buff: "cap", val: 0.50 },
+        { name: "Frostshard", buff: "dig_str", val: 0.50 },
+        { name: "Mythril", buff: "str", val: 0.50 }
+    ],
+    "Exotic": [
+        { name: "Vineheart", buff: "luck", val: 0.80 },
+        { name: "Voidstone", buff: "luck_cap", val: 0.40 },
+        { name: "North Star", buff: "luck_cap_spd_dig", val: 0.20 },
+        { name: "Eternium", buff: "luck_spd_dig", val: 0.32 },
+        { name: "Cryonic Artifact", buff: "dig_str_spd", val: [1.2, 1.2, -0.8] },
+        { name: "Umbrite", buff: "dig_spd", val: 0.40 }
+    ]
+};
 
     function toggleMuseum() {
         const overlay = document.getElementById('museum-overlay');
