@@ -375,10 +375,10 @@ const itemData = {
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
-  if (pan) { 
+if (pan) { 
     L += pan.luck; 
     C += pan.cap; 
-    multiS += (pan.spd / 100 || 0); // Correctly treats speed as a percentage multiplier
+    S += (pan.spd || 0); // Adds directly to base S
     Str += pan.str; 
 }
 
@@ -387,22 +387,29 @@ const itemData = {
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
 const neck = itemData.neck[document.getElementById('slot-neck').value];
-if (neck) { L += neck.luck; multiS += (neck.spd / 100 || 0); C += (neck.cap || 0); }
+if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-if (charm) { L += charm.luck; C += (charm.cap || 0); multiS += (charm.spd / 100 || 0); }
+if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
 
         for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
             if (!ringElement) continue;
             const ringKey = ringElement.value;
             const ring = itemData.rings[ringKey];
-            if (ring) {
-                L += ring.luck; C += ring.cap; Str += ring.str;
-                if (ringKey === 'otherworldly') multiS += ring.spd;
-                else S += ring.spd;
-            }
-        }
+// Inside your ring loop (where you process each slot 1-8)
+if (ring) {
+    L += ring.luck;
+    C += ring.cap;
+    Str += ring.str;
+    
+    // Check if the ring is 'otherworldly' (multiplier) or standard (base)
+    if (rKey === 'otherworldly') {
+        multiS += ring.spd; 
+    } else {
+        S += (ring.spd || 0); // Adds directly to base S
+    }
+}
 // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
         if (shovel === 'non_euclidian') multiC += 0.5;
