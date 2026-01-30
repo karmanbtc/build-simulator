@@ -5,150 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RNG Build Optimizer - Equipment Focus</title>
     <style>
-        :root {
-            --bg-color: #0d0d0d;
-            --panel-bg: #161616;
-            --accent: #00f2ff;
-            --text-main: #e0e0e0;
-            --border: #2a2a2a;
-            --rarity-prismatic: #ff00ff;
-            --rarity-festive: #ff4d4d;
-        }
+:root {
+    --bg-color: #0d0d0d;
+    --panel-bg: #161616;
+    --accent: #00f2ff;
+    --text-main: #e0e0e0;
+    --border: #2a2a2a;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px;
+}
 
-        .container {
-            display: grid;
-            grid-template-columns: 350px 1fr 350px;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
+/* 1. Layout Logic */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
 
-        .panel {
-            background: var(--panel-bg);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
+/* Desktop override for the specific 3-column look */
+@media (min-width: 1200px) {
+    .container {
+        grid-template-columns: 350px 1fr 350px;
+    }
+}
 
-        /* Museum Overlay Styles */
-        #museum-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 40px;
-            overflow-y: auto;
-        }
+.panel {
+    background: var(--panel-bg);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    position: relative;
+    height: fit-content; /* Prevents panels from stretching unnecessarily */
+}
 
-        .museum-content {
-            background: var(--panel-bg);
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-            border: 2px solid var(--accent);
-            border-radius: 15px;
-        }
+/* 2. Mobile Specific Tweaks */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    
+    select, input, .open-museum-btn {
+        height: 48px; /* Easier to tap */
+        font-size: 16px !important; /* Prevents auto-zoom on iPhone */
+    }
 
-        .open-museum-btn {
-            width: 100%;
-            padding: 15px;
-            background: #222;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 10px;
-            border-radius: 8px;
-        }
+    .ring-slots-grid {
+        grid-template-columns: 1fr 1fr; /* 2x4 grid instead of 4x2 */
+    }
 
-        /* Equipment Grid Styles */
-        .equipment-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+    #museum-overlay {
+        padding: 10px !important; /* More space for content on small screens */
+    }
 
-        .slot {
-            background: #111;
-            border: 1px solid #333;
-            padding: 10px;
-            border-radius: 8px;
-        }
+    .museum-content {
+        padding: 15px !important;
+    }
 
-        .ring-slots-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
+    .big-result h1 {
+        font-size: 2rem;
+    }
+}
 
-        h2 { color: var(--accent); margin-top: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
-        h3 { font-size: 0.85rem; margin: 15px 0 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+/* 3. The rest of your existing styles */
+#museum-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    padding: 40px;
+    overflow-y: auto;
+}
 
-        select, input {
-            width: 100%;
-            padding: 10px;
-            background: #222;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 6px;
-            font-size: 0.8rem;
-        }
+.museum-content {
+    background: var(--panel-bg);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    border: 2px solid var(--accent);
+    border-radius: 15px;
+}
 
-        .ore-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-        }
+.open-museum-btn {
+    width: 100%;
+    padding: 15px;
+    background: #222;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+    border-radius: 8px;
+}
 
-        .ore-toggle {
-            display: flex;
-            align-items: center;
-            font-size: 0.7rem;
-            background: #1e1e1e;
-            padding: 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 4px;
-        }
+.equipment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
 
-        .stat-card {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #222;
-            font-size: 0.9rem;
-        }
+.slot {
+    background: #111;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-        .big-result {
-            margin-top: 25px;
-            padding: 25px;
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border: 2px solid var(--accent);
-            border-radius: 15px;
-            text-align: center;
-        }
+.ring-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
 
-        .big-result h1 { margin: 5px 0 0; font-size: 2.8rem; color: #fff; }
+h2 { color: var(--accent); margin-top: 0; font-size: 1.1rem; text-transform: uppercase; }
+h3 { font-size: 0.85rem; margin: 15px 0 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
 
-        .Common { color: #cccccc; } .Uncommon { color: #1fd13a; } .Rare { color: #0059ff; }
-        .Epic { color: #b11ae8; } .Legendary { color: #ffff00; } .Mythic { color: #cf0064; }
-        .Exotic { color: #ff0011; }
+select, input {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.ore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.ore-toggle {
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+    background: #1e1e1e;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.stat-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #222;
+    font-size: 0.9rem;
+}
+
+.big-result {
+    margin-top: 25px;
+    padding: 25px;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 2px solid var(--accent);
+    border-radius: 15px;
+    text-align: center;
+}
+
+.big-result h1 { margin: 5px 0 0; color: #fff; }
+
+.Common { color: #cccccc; } .Uncommon { color: #1fd13a; } .Rare { color: #0059ff; }
+.Epic { color: #b11ae8; } .Legendary { color: #ffff00; } .Mythic { color: #cf0064; }
+.Exotic { color: #ff0011; }
     </style>
 </head>
 <body>
