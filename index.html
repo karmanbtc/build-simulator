@@ -425,7 +425,6 @@ const itemData = {
         if (document.getElementById('totem-str').checked) multiStr += 1.0;
         if (document.getElementById('totem-lumi').checked) {
             multiC += 0.5;
-            S += 50;
         }
 
         // Museum Logic
@@ -442,20 +441,23 @@ const itemData = {
             if (bType.includes('spd')) multiS += Array.isArray(vVal) ? vVal[2] : vVal;
         });
 
-      // 6. FINAL TOTALS
+// 6. FINAL TOTALS
 const totalL = L * (1 + multiL);
 const totalC = C * (1 + multiC);
 const totalStr = Str * (1 + multiStr);
 
-// --- NEW SPEED LOGIC ---
-// 1. Calculate multiplied speed (Base 100 + Pan + Rings + Neck + Charm)
+// 1. Calculate Multiplied Speed (Base + Equipment only)
 let finalS = S * (1 + multiS); 
 
-// 2. Add flat bonuses AFTER the multiplication
-if (document.getElementById('runes-spd').checked) finalS += 25; 
-if (document.getElementById('totem-lumi').checked) finalS += 50;
+// 2. Add Flat Totem/Rune Speed AFTER the multiplication is done
+if (document.getElementById('totem-lumi').checked) {
+    finalS += 100; // This is now a flat +100
+}
+if (document.getElementById('runes-spd').checked) {
+    finalS += 25; // This is now a flat +25
+}
 
-// Use this new finalS for the rest of the calculations
+// 3. Set the total for the UI
 const totalS = finalS;
         // RPS Calculation
         let rVal = 1;
