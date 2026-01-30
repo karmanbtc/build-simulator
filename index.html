@@ -367,10 +367,10 @@ const itemData = {
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
 const neck = itemData.neck[document.getElementById('slot-neck').value];
-        if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
+if (neck) { L += neck.luck; S += (neck.spd / 100 || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
-        if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd || 0); }
+if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd / 100 || 0); }
 
         for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
@@ -385,7 +385,7 @@ const neck = itemData.neck[document.getElementById('slot-neck').value];
         }
 // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
-        if (shovel === 'non_euclidian') multiC += 0.5;
+        if (shovel === 'non_euclidian') multiC += 0.65;
         if (shovel === 'rhythmic') multiL += 0.3;
         
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
