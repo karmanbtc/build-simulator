@@ -124,6 +124,7 @@
             padding: 6px;
             border-radius: 4px;
             cursor: pointer;
+            margin-bottom: 4px;
         }
 
         .stat-card {
@@ -184,16 +185,16 @@
             </select>
         </div>
 
-       <h3>Global Modifiers & Totems</h3>
+        <h3>Global Modifiers & Totems</h3>
         <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
-        <label class="ore-toggle" style="border: 1px solid #ffd700; color:#ffd700;"><input type="checkbox" id="prospector-mvp" onchange="calculate()"> Prospector MVP (+0.15x L/C)</label>
+        <label class="ore-toggle" style="color:#ffd700;"><input type="checkbox" id="prospector-mvp" onchange="calculate()"> Prospector MVP (0.15x Luck/Cap)</label>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px;">
-            <label class="ore-toggle"><input type="checkbox" id="totem-luck" onchange="calculate()"> Luck Totem (1x)</label>
-            <label class="ore-toggle"><input type="checkbox" id="totem-str" onchange="calculate()"> Str Totem (1x)</label>
-            <label class="ore-toggle" style="grid-column: span 2;"><input type="checkbox" id="totem-lumi" onchange="calculate()"> Lumiant (.5x C, 50% S)</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+            <label class="ore-toggle"><input type="checkbox" id="totem-luck" onchange="calculate()"> Luck Totem</label>
+            <label class="ore-toggle"><input type="checkbox" id="totem-str" onchange="calculate()"> Str Totem</label>
+            <label class="ore-toggle" style="grid-column: span 2;"><input type="checkbox" id="totem-lumi" onchange="calculate()"> Lumiant Totem (Cap/Spd)</label>
         </div>
         
         <button class="open-museum-btn" onclick="toggleMuseum()">Open Museum</button>
@@ -205,30 +206,27 @@
 
     <div class="panel">
         <h2>Equipped Gear</h2>
-        
         <div class="equipment-grid">
             <div class="slot">
                 <label>Necklace</label>
                 <select id="slot-neck" onchange="calculate()">
                     <option value="none">Empty</option>
-                    <option value="witch_hat">Witch Hat (1760 Luck, 44 Speed)</option>
-                    <option value="timelocked_soul">Witch Hat (1598 Luck, 176 Speed)</option>
+                    <option value="witch_hat">Witch Hat</option>
                 </select>
             </div>
             <div class="slot">
                 <label>Charm</label>
                 <select id="slot-charm" onchange="calculate()">
                     <option value="none">Empty</option>
-                    <option value="venomshank">Venomshank (2080 Luck)</option>
-                    <option value="santa_bag">Santa's Bag (1080 Luck, 880 Cap)</option>
+                    <option value="venomshank">Venomshank</option>
+                    <option value="santa_bag">Santa's Bag</option>
                 </select>
             </div>
         </div>
 
         <h3>Rings (8 Slots)</h3>
-        <div class="ring-slots-grid" id="ring-container">
-            </div>
-        <p style="font-size:0.7rem; color:#666; margin-top:10px;">* Note: Ring of Champions is limited to 1 unique slot.</p>
+        <div class="ring-slots-grid" id="ring-container"></div>
+        <p style="font-size:0.7rem; color:#666; margin-top:10px;">* Note: Ring of Champions is unique.</p>
     </div>
 
     <div class="panel">
@@ -243,10 +241,6 @@
             <div style="font-size:0.75rem; color:var(--accent); text-transform:uppercase;">Rerolls Per Second</div>
             <h1 id="result-rps">0.00</h1>
         </div>
-        
-        <div style="margin-top:20px; font-size:0.7rem; color:#444; text-align:center;">
-            Formula: $rps = \frac{L\sqrt{C}}{\frac{C}{rs} + 2.5}$
-        </div>
     </div>
 </div>
 
@@ -255,7 +249,7 @@
         rings: {
             purifying: { name: "Purifying Ring", luck: 144, cap: 176, str: 48, spd: 0 },
             vortex: { name: "Vortex Ring", luck: 248, cap: 520, str: 18, spd: 0 },
-            otherworldly: { name: "Otherworldly Ring", luck: 600, cap: 0, str: 0, spd: 0.35 }, // 35% speed
+            otherworldly: { name: "Otherworldly Ring", luck: 600, cap: 0, str: 0, spd: 0.35 },
             umbrite: { name: "Umbrite Ring", luck: 392, cap: 160, str: 18, spd: 0 },
             champions: { name: "Ring of Champions", luck: 880, cap: 720, str: 88, spd: 160, unique: true }
         },
@@ -323,7 +317,6 @@
     function validateRings(changedIndex) {
         const ringSelects = Array.from({length: 8}, (_, i) => document.getElementById(`ring-${i+1}`));
         const championCount = ringSelects.filter(s => s.value === 'champions').length;
-        
         if (championCount > 1) {
             alert("You can only equip one Ring of Champions at a time!");
             document.getElementById(`ring-${changedIndex}`).value = "none";
@@ -371,19 +364,28 @@
             const ringKey = document.getElementById(`ring-${i}`).value;
             const ring = itemData.rings[ringKey];
             if (ring) {
-                L += ring.luck;
-                C += ring.cap;
-                Str += ring.str;
-                // Special handling for Otherworldly (%) vs Champions (flat)
+                L += ring.luck; C += ring.cap; Str += ring.str;
                 if (ringKey === 'otherworldly') multiS += ring.spd;
                 else S += ring.spd;
             }
         }
 
-        // Passives
+        // Global Modifiers & Prospector MVP
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
         if (document.getElementById('runes-luck').checked) multiL += 1.2;
         if (document.getElementById('runes-spd').checked) multiS += 0.25;
+        if (document.getElementById('prospector-mvp').checked) {
+            multiL += 0.15;
+            multiC += 0.15;
+        }
+
+        // Totem Logic (Additive Multipliers)
+        if (document.getElementById('totem-luck').checked) multiL += 1.0;
+        if (document.getElementById('totem-str').checked) multiStr += 1.0;
+        if (document.getElementById('totem-lumi').checked) {
+            multiC += 0.5;
+            multiS += 0.5;
+        }
 
         // Museum
         document.querySelectorAll('.museum-box:checked').forEach(box => {
