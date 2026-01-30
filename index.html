@@ -207,7 +207,7 @@
         <button class="open-museum-btn" onclick="toggleMuseum()">Open Museum</button>
 
         <div style="margin-top:20px; padding:10px; background:#111; border-radius:5px; font-size:0.75rem; color:#666;">
-            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 0.45
+            <strong>Base Stats:</strong> Luck: 803 | Cap: 25 | Spd: 100
         </div>
     </div>
 
@@ -392,38 +392,42 @@ if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
         const charm = itemData.charms[document.getElementById('slot-charm').value];
 if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
 
-        for(let i=1; i<=8; i++) {
+for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
             if (!ringElement) continue;
-            const ringKey = ringElement.value;
+            const ringKey = ringElement.value; // You defined 'ringKey' here...
             const ring = itemData.rings[ringKey];
-// Inside your ring loop (Line 383 area)
-if (ring) {
-    L += ring.luck;
-    C += ring.cap;
-    Str += ring.str;
-    
-    // Most rings add to BASE speed, 'otherworldly' adds to MULTI
-    if (rKey === 'otherworldly') {
-        multiS += ring.spd; 
-    } else {
-        S += (ring.spd || 0); // Adds directly to base S
-    }
-}
 
-// Shovel Enchants
+            if (ring) {
+                L += ring.luck;
+                C += ring.cap;
+                Str += ring.str;
+                
+                // FIXED: Changed 'rKey' to 'ringKey' to match line 314
+                if (ringKey === 'otherworldly') {
+                    multiS += (ring.spd || 0); 
+                } else {
+                    S += (ring.spd || 0); // Adds standard rings to base S
+                }
+            }
+        } // Close the loop here
+// ... (Ring Loop ends here) ...
+
+        // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
         if (shovel === 'non_euclidian') multiC += 0.5;
         if (shovel === 'rhythmic') multiL += 0.3;
         
+        // Passives & Runes
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
-if (document.getElementById('runes-luck').checked) multiL += 0.2; // Changed from 1.2 to 0.2
-if (document.getElementById('runes-spd').checked) S += 25; // Adds 25 flat to base S instead of multiS
+        if (document.getElementById('runes-luck').checked) multiL += 0.2; 
+        if (document.getElementById('runes-spd').checked) S += 25; 
         if (document.getElementById('prospector-mvp').checked) {
             multiL += 0.15;
             multiC += 0.15;
         }
 
+        // Totems
         if (document.getElementById('totem-luck').checked) multiL += 1.0;
         if (document.getElementById('totem-str').checked) multiStr += 1.0;
         if (document.getElementById('totem-lumi').checked) {
@@ -431,11 +435,13 @@ if (document.getElementById('runes-spd').checked) S += 25; // Adds 25 flat to ba
             S += 50;
         }
 
+        // Museum Logic
         document.querySelectorAll('.museum-box:checked').forEach(box => {
             const r = box.dataset.rarity;
             const b = box.dataset.buff;
             const v = JSON.parse(box.dataset.val);
-            multiL += voidtornBonus[r]; multiC += voidtornBonus[r];
+            multiL += voidtornBonus[r]; 
+            multiC += voidtornBonus[r];
 
             if (b.includes('luck')) multiL += Array.isArray(v) ? v[0] : v;
             if (b.includes('cap')) multiC += Array.isArray(v) ? v[0] : v;
@@ -443,36 +449,30 @@ if (document.getElementById('runes-spd').checked) S += 25; // Adds 25 flat to ba
             if (b.includes('spd')) multiS += Array.isArray(v) ? v[2] : v;
         });
 
-    // Move this to the VERY BOTTOM of the calculate function
-    // 6. FINAL TOTALS
-const totalL = L * (1 + multiL); // Now uses the corrected 0.2x from runes
-const totalC = C * (1 + multiC);
-const totalStr = Str * (1 + multiStr);
-const totalS = S * (1 + multiS);// This will now include Shovel, Runes, and Rings
+        // 6. FINAL TOTALS (Applied once at the end)
+        const totalL = L * (1 + multiL);
+        const totalC = C * (1 + multiC);
+        const totalStr = Str * (1 + multiStr);
+        const totalS = S * (1 + multiS); 
 
+        // RPS Calculation
         let r = 1;
         for (let entry of speedTable) { if (totalS >= entry.s) r = entry.r; }
-
         const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (r * totalStr)) + 2.5);
 
+        // Update UI Displays
         document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
         document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
         document.getElementById('stat-str').innerText = totalStr.toFixed(1);
         document.getElementById('stat-spd').innerText = totalS.toFixed(1);
         document.getElementById('stat-r').innerText = r.toFixed(2);
         document.getElementById('result-rps').innerText = rps.toFixed(2);
-        // Display the multipliers (formatted to 2 decimal places)
-document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
-document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
-document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
-document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";
 
-    // Update UI
-    document.getElementById('total-luck').innerText = Math.floor(totalL).toLocaleString();
-    document.getElementById('total-cap').innerText = Math.floor(totalC).toLocaleString();
-    document.getElementById('total-spd').innerText = totalS.toFixed(2);
-
-} // <--- The function should end here        
+        // Update Multiplier Displays
+        document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
+        document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
+        document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
+        document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";    
     }
 
     // Initialize
