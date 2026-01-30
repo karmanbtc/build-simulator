@@ -395,22 +395,18 @@ if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
 for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
             if (!ringElement) continue;
-            const ringKey = ringElement.value; // You defined 'ringKey' here...
+            const ringKey = ringElement.value;
             const ring = itemData.rings[ringKey];
 
-if (ring) {
+            if (ring) {
                 L += ring.luck;
                 C += ring.cap;
                 Str += ring.str;
                 
-                if (ringKey === 'otherworldly') {
-                    // This adds 0.35 to the multiplier bucket
-                    multiS += 0.35; 
-                } else {
-                    // Standard rings like Champion add flat values (e.g., 160) to base
-                    S += (ring.spd || 0); 
-                }
+                // Add ALL ring speed (including Otherworldly) to the base S
+                S += (ring.spd || 0); 
             }
+        }
         } // Close the loop here
 // ... (Ring Loop ends here) ...
 
