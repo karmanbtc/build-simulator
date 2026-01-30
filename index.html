@@ -371,7 +371,6 @@ if (neck) { L += neck.luck; S += (neck.spd / 100 || 0); C += (neck.cap || 0); }
 
         const charm = itemData.charms[document.getElementById('slot-charm').value];
 if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd / 100 || 0); }
-
         for(let i=1; i<=8; i++) {
             const ringElement = document.getElementById(`ring-${i}`);
             if (!ringElement) continue;
@@ -385,7 +384,7 @@ if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd / 100 || 0)
         }
 // Shovel Enchants
         const shovel = document.getElementById('shovel-enchant').value;
-        if (shovel === 'non_euclidian') multiC += 0.65;
+        if (shovel === 'non_euclidian') multiC += 0.7;
         if (shovel === 'rhythmic') multiL += 0.3;
         
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
