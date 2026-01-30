@@ -255,12 +255,12 @@
             champions: { name: "Ring of Champions", luck: 880, cap: 720, str: 88, spd: 160, unique: true }
         },
         charms: {
-            venomshank: { luck: 2080, cap: 0 },
-            santa_bag: { luck: 1080, cap: 880 }
+            venomshank: { luck: 2080, cap: 0, spd: 0 },
+            santa_bag: { luck: 1080, cap: 880, spd: 0 },
+            timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         },
         neck: {
             witch_hat: { luck: 1760, spd: 44 }
-            timelock_soul: { luck: 1598, cap: 0, spd: 176 }
         }
     };
 
@@ -305,6 +305,8 @@
 
     function initRings() {
         const container = document.getElementById('ring-container');
+        if (!container) return;
+        container.innerHTML = ""; 
         for(let i=1; i<=8; i++) {
             const div = document.createElement('div');
             div.className = 'slot';
@@ -318,7 +320,7 @@
 
     function validateRings(changedIndex) {
         const ringSelects = Array.from({length: 8}, (_, i) => document.getElementById(`ring-${i+1}`));
-        const championCount = ringSelects.filter(s => s.value === 'champions').length;
+        const championCount = ringSelects.filter(s => s && s.value === 'champions').length;
         if (championCount > 1) {
             alert("You can only equip one Ring of Champions at a time!");
             document.getElementById(`ring-${changedIndex}`).value = "none";
@@ -328,6 +330,8 @@
 
     function renderMuseum() {
         const container = document.getElementById('museum-container');
+        if (!container) return;
+        container.innerHTML = "";
         for (const [rarity, ores] of Object.entries(museumData)) {
             const section = document.createElement('div');
             section.className = 'museum-rarity';
@@ -347,7 +351,6 @@
         let L = 803, C = 25, S = 0.45, Str = 1;
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
-        // Pan Logic
         const pan = pans[document.getElementById('equip-pan').value];
         if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
 
@@ -355,7 +358,6 @@
         if (enc === 'glowing') multiS += 0.25;
         if (enc === 'cosmic') { C += 50; Str += 3; }
 
-        // Equipment Stats
         const neck = itemData.neck[document.getElementById('slot-neck').value];
         if (neck) { L += neck.luck; S += neck.spd; }
 
@@ -363,7 +365,9 @@
         if (charm) { L += charm.luck; C += (charm.cap || 0); S += (charm.spd || 0); }
 
         for(let i=1; i<=8; i++) {
-            const ringKey = document.getElementById(`ring-${i}`).value;
+            const ringElement = document.getElementById(`ring-${i}`);
+            if (!ringElement) continue;
+            const ringKey = ringElement.value;
             const ring = itemData.rings[ringKey];
             if (ring) {
                 L += ring.luck; C += ring.cap; Str += ring.str;
@@ -372,7 +376,6 @@
             }
         }
 
-        // Global Modifiers & Prospector MVP
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
         if (document.getElementById('runes-luck').checked) multiL += 1.2;
         if (document.getElementById('runes-spd').checked) multiS += 0.25;
@@ -381,7 +384,6 @@
             multiC += 0.15;
         }
 
-        // Totem Logic (Additive Multipliers)
         if (document.getElementById('totem-luck').checked) multiL += 1.0;
         if (document.getElementById('totem-str').checked) multiStr += 1.0;
         if (document.getElementById('totem-lumi').checked) {
@@ -389,7 +391,6 @@
             multiS += 0.5;
         }
 
-        // Museum
         document.querySelectorAll('.museum-box:checked').forEach(box => {
             const r = box.dataset.rarity;
             const b = box.dataset.buff;
@@ -420,9 +421,12 @@
         document.getElementById('result-rps').innerText = rps.toFixed(2);
     }
 
-    initRings();
-    renderMuseum();
-    calculate();
+    // Initialize
+    window.onload = function() {
+        initRings();
+        renderMuseum();
+        calculate();
+    };
 </script>
 </body>
 </html>
