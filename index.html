@@ -194,7 +194,7 @@
         </div>
         <h3>Global Modifiers & Totems</h3>
         <label class="ore-toggle"><input type="checkbox" id="mastery-luck" onchange="calculate()" checked> Mastery Luck (0.25x)</label>
-        <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (0.2x)</label>
+        <label class="ore-toggle"><input type="checkbox" id="runes-luck" onchange="calculate()" checked> Runes Luck (1.2x)</label>
         <label class="ore-toggle"><input type="checkbox" id="runes-spd" onchange="calculate()" checked> Runes Shake Speed (25%)</label>
         <label class="ore-toggle" style="color:#ffd700;"><input type="checkbox" id="prospector-mvp" onchange="calculate()"> Prospector MVP (0.15x Luck/Cap)</label>
         
@@ -413,7 +413,7 @@ const itemData = {
         
         // Passives & Runes
         if (document.getElementById('mastery-luck').checked) multiL += 0.25;
-        if (document.getElementById('runes-luck').checked) multiL += 0.2; 
+        if (document.getElementById('runes-luck').checked) multiL += 1.2; 
         if (document.getElementById('runes-spd').checked) S += 25; 
         if (document.getElementById('prospector-mvp').checked) {
             multiL += 0.15;
