@@ -360,7 +360,12 @@ const itemData = {
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         const pan = pans[document.getElementById('equip-pan').value];
-        if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
+  if (pan) { 
+    L += pan.luck; 
+    C += pan.cap; 
+    multiS += (pan.spd / 100 || 0); // Correctly treats speed as a percentage multiplier
+    Str += pan.str; 
+}
 
         const enc = document.getElementById('pan-enchant').value;
         if (enc === 'glowing') multiS += 0.25;
