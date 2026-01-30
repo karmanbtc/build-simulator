@@ -261,6 +261,17 @@
     <span>Str Multi:</span>
     <span id="multi-str-display">1.00x</span>
 </div>
+        <div class="panel">
+    <h2>Final Output</h2>
+    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+    
+    <h3 style="color: #666; font-size: 0.75rem; text-transform: uppercase;">Raw Base Stats (Pre-Multi)</h3>
+    <div class="stat-card" style="color: #888;"><span>Base Luck:</span> <span id="base-luck-val">0</span></div>
+    <div class="stat-card" style="color: #888;"><span>Base Cap:</span> <span id="base-cap-val">0</span></div>
+    <div class="stat-card" style="color: #888;"><span>Base Str:</span> <span id="base-str-val">0</span></div>
+    <div class="stat-card" style="color: #888;"><span>Base Spd:</span> <span id="base-spd-val">0</span></div>
+    
+    </div>
         <div class="big-result">
             <div style="font-size:0.75rem; color:var(--accent); text-transform:uppercase;">Rerolls Per Second</div>
             <h1 id="result-rps">0.00</h1>
@@ -441,41 +452,44 @@ const itemData = {
             if (bType.includes('spd')) multiS += Array.isArray(vVal) ? vVal[2] : vVal;
         });
 
-// 6. FINAL TOTALS
-const totalL = L * (1 + multiL);
-const totalC = C * (1 + multiC);
-const totalStr = Str * (1 + multiStr);
+// --- 6. FINAL TOTALS ---
+    const totalL = L * (1 + multiL);
+    const totalC = C * (1 + multiC);
+    const totalStr = Str * (1 + multiStr);
 
-// 1. Calculate Multiplied Speed (Base + Equipment only)
-let finalS = S * (1 + multiS); 
+    // SPEED LOGIC: Only multiply the gear (S), then add Totem/Runes as flat values
+    let multipliedS = S * (1 + multiS); 
+    let flatSpdAdditions = 0;
+    if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 100;
+    if (document.getElementById('runes-spd').checked) flatSpdAdditions += 25;
 
-// 2. Add Flat Totem/Rune Speed AFTER the multiplication is done
-if (document.getElementById('totem-lumi').checked) {
-    finalS += 50; // This is now a flat +100
-}
-if (document.getElementById('runes-spd').checked) {
-    finalS += 25; // This is now a flat +25
-}
+    const totalS = multipliedS + flatSpdAdditions;
 
-// 3. Set the total for the UI
-const totalS = finalS;
-        // RPS Calculation
-        let rVal = 1;
-        for (let entry of speedTable) { if (totalS >= entry.s) rVal = entry.r; }
-        const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (rVal * totalStr)) + 2.5);
+    // --- 7. RPS CALCULATION ---
+    let rVal = 1;
+    for (let entry of speedTable) { if (totalS >= entry.s) rVal = entry.r; }
+    const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (rVal * totalStr)) + 2.5);
 
-        // Update UI Displays
-        document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
-        document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
-        document.getElementById('stat-str').innerText = totalStr.toFixed(1);
-        document.getElementById('stat-spd').innerText = totalS.toFixed(1);
-        document.getElementById('stat-r').innerText = rVal.toFixed(2);
-        document.getElementById('result-rps').innerText = rps.toFixed(2);
+    // --- 8. UPDATE UI ---
+    // Standard Outputs
+    document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
+    document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
+    document.getElementById('stat-str').innerText = totalStr.toFixed(1);
+    document.getElementById('stat-spd').innerText = totalS.toFixed(1);
+    document.getElementById('result-rps').innerText = rps.toFixed(2);
 
-        document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
-        document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
-        document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
-        document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";    
+    // Multiplier Displays
+    document.getElementById('multi-luck-display').innerText = (1 + multiL).toFixed(2) + "x";
+    document.getElementById('multi-cap-display').innerText = (1 + multiC).toFixed(2) + "x";
+    document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
+    document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";
+
+    // DEBUG: RAW BASE STATS
+    // These should match the "Base" row in your spreadsheet
+    document.getElementById('base-luck-val').innerText = L.toLocaleString();
+    document.getElementById('base-cap-val').innerText = C.toLocaleString();
+    document.getElementById('base-str-val').innerText = Str.toFixed(1);
+    document.getElementById('base-spd-val').innerText = (S + flatSpdAdditions).toFixed(1);
     }
 
     window.onload = function() {
