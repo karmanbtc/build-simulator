@@ -460,7 +460,7 @@ const itemData = {
     // SPEED LOGIC: Only multiply the gear (S), then add Totem/Runes as flat values
     let multipliedS = S * (1 + multiS); 
     let flatSpdAdditions = 0;
-    if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 100;
+    if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 50;
     if (document.getElementById('runes-spd').checked) flatSpdAdditions += 25;
 
     const totalS = multipliedS + flatSpdAdditions;
