@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RNG Build Optimizer - Ultimate Merge</title>
+    <title>RNG Build Simlutor</title>
     <style>
         :root {
             --bg-color: #0d0d0d;
@@ -134,7 +134,7 @@
         <h2>Equipped Gear</h2>
         <div class="equipment-grid">
             <div class="slot">
-                <label>Necklace</label>
+                <label>Charm</label>
                 <select id="slot-neck" onchange="calculate()">
                     <option value="none">Empty</option>
                     <option value="witch_hat">Witch Hat</option>
@@ -142,7 +142,7 @@
                 </select>
             </div>
             <div class="slot">
-                <label>Charm</label>
+                <label>Necklace</label>
                 <select id="slot-charm" onchange="calculate()">
                     <option value="none">Empty</option>
                     <option value="venomshank">Venomshank</option>
@@ -242,7 +242,7 @@
 
     function calculate() {
         // 1. STAT BASES
-        let L = 803, C = 25, S = 0.45, Str = 1;
+        let L = 803, C = 25, S = 0, Str = 0;
         let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
 
         // 2. PASSIVE CORRECTION (Subtract if unchecked because they are in the base)
@@ -271,7 +271,7 @@
 
         // 5. EQUIPMENT
         const pan = pans[document.getElementById('equip-pan').value];
-        if (pan) { L += pan.luck; C += pan.cap; S += pan.spd; Str += pan.str; }
+if (pan) { L += pan.luck; C += pan.cap; multiS += (pan.spd / 100 || 0); Str += pan.str; }
         const enc = document.getElementById('pan-enchant').value;
         if (enc === 'glowing') multiS += 0.25;
         if (enc === 'cosmic') { C += 50; Str += 3; }
