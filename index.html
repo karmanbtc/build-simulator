@@ -382,85 +382,33 @@ const itemData = {
         }
     }
 
-    function calculate() {
-        let L = 803, C = 25, S = 0, Str = 0;
-        let multiL = 0, multiC = 0, multiS = 0, multiStr = 0;
+ // --- 5. PASSIVES, RUNES & TOTEMS ---
+    let potionSpd = 20; // 20% flat boost of the STARTING base 100
 
-        const pan = pans[document.getElementById('equip-pan').value];
-        if (pan) { 
-            L += pan.luck; 
-            C += pan.cap; 
-            S += (pan.spd || 0); 
-            Str += pan.str; 
-        }
+    const shovel = document.getElementById('shovel-enchant').value;
+    if (shovel === 'non_euclidian') multiC += 1.0; // Updated to 1x cap
+    if (shovel === 'rhythmic') multiL += 0.3;
 
-        const enc = document.getElementById('pan-enchant').value;
-        if (enc === 'glowing') S += 25; 
-        if (enc === 'cosmic') { C += 50; Str += 3; }
+    if (document.getElementById('mastery-luck').checked) multiL += 0.25;
+    if (document.getElementById('runes-luck').checked) multiL += 1.2;
+    if (document.getElementById('prospector-mvp').checked) {
+        multiL += 0.15;
+        multiC += 0.15;
+    }
 
-        const neck = itemData.neck[document.getElementById('slot-neck').value];
-        if (neck) { L += neck.luck; S += (neck.spd || 0); C += (neck.cap || 0); }
+    if (document.getElementById('totem-luck').checked) multiL += 1.0;
+    if (document.getElementById('totem-str').checked) multiStr += 1.0;
+    if (document.getElementById('totem-lumi').checked) multiC += 0.5;
 
-        const charm = itemData.charms[document.getElementById('slot-charm').value];
-        if (charm) { L += charm.luck; S += (charm.spd || 0); C += (charm.cap || 0); }
-
-        for(let i=1; i<=8; i++) {
-            const ringElement = document.getElementById(`ring-${i}`);
-            if (!ringElement) continue;
-            const ringKey = ringElement.value;
-            const ring = itemData.rings[ringKey];
-            if (ring) {
-                L += ring.luck;
-                C += ring.cap;
-                Str += ring.str;
-                S += (ring.spd || 0); 
-            }
-        } 
-
-        // Shovel Enchants
-        const shovel = document.getElementById('shovel-enchant').value;
-        if (shovel === 'non_euclidian') multiC += 0.5;
-        if (shovel === 'rhythmic') multiL += 0.3;
-        
-        // Passives & Runes
-        if (document.getElementById('mastery-luck').checked) multiL += 0.25;
-        if (document.getElementById('runes-luck').checked) multiL += 1.2; 
-        if (document.getElementById('runes-spd').checked) ; 
-        if (document.getElementById('prospector-mvp').checked) {
-            multiL += 0.15;
-            multiC += 0.15;
-        }
-
-        // Totems
-        if (document.getElementById('totem-luck').checked) multiL += 1.0;
-        if (document.getElementById('totem-str').checked) multiStr += 1.0;
-        if (document.getElementById('totem-lumi').checked) {
-            multiC += 0.5;
-        }
-
-        // Museum Logic
-        document.querySelectorAll('.museum-box:checked').forEach(box => {
-            const rRarity = box.dataset.rarity;
-            const bType = box.dataset.buff;
-            const vVal = JSON.parse(box.dataset.val);
-            multiL += voidtornBonus[rRarity]; 
-            multiC += voidtornBonus[rRarity];
-
-            if (bType.includes('luck')) multiL += Array.isArray(vVal) ? vVal[0] : vVal;
-            if (bType.includes('cap')) multiC += Array.isArray(vVal) ? vVal[0] : vVal;
-            if (bType.includes('str')) multiStr += Array.isArray(vVal) ? vVal[1] : vVal;
-            if (bType.includes('spd')) multiS += Array.isArray(vVal) ? vVal[2] : vVal;
-        });
-
-// --- 6. FINAL TOTALS ---
+    // --- 6. FINAL TOTALS ---
     const totalL = L * (1 + multiL);
     const totalC = C * (1 + multiC);
     const totalStr = Str * (1 + multiStr);
 
-    // SPEED LOGIC: Only multiply the gear (S), then add Totem/Runes as flat values
+    // SPEED LOGIC: Multiply Gear ONLY, then add Flat Additions
     let multipliedS = S * (1 + multiS); 
-    let flatSpdAdditions = 0;
-    if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 50;
+    let flatSpdAdditions = potionSpd; // Start with the 20 potion speed
+    if (document.getElementById('totem-lumi').checked) flatSpdAdditions += 100;
     if (document.getElementById('runes-spd').checked) flatSpdAdditions += 25;
 
     const totalS = multipliedS + flatSpdAdditions;
@@ -470,12 +418,12 @@ const itemData = {
     for (let entry of speedTable) { if (totalS >= entry.s) rVal = entry.r; }
     const rps = (totalL * Math.sqrt(totalC)) / ((totalC / (rVal * totalStr)) + 2.5);
 
-    // --- 8. UPDATE UI ---
-    // Standard Outputs
+    // --- 8. UPDATE UI & DEBUG ---
     document.getElementById('stat-luck').innerText = Math.floor(totalL).toLocaleString();
     document.getElementById('stat-cap').innerText = Math.floor(totalC).toLocaleString();
     document.getElementById('stat-str').innerText = totalStr.toFixed(1);
     document.getElementById('stat-spd').innerText = totalS.toFixed(1);
+    document.getElementById('stat-r').innerText = rVal.toFixed(2);
     document.getElementById('result-rps').innerText = rps.toFixed(2);
 
     // Multiplier Displays
@@ -484,12 +432,13 @@ const itemData = {
     document.getElementById('multi-spd-display').innerText = (1 + multiS).toFixed(2) + "x";
     document.getElementById('multi-str-display').innerText = (1 + multiStr).toFixed(2) + "x";
 
-    // DEBUG: RAW BASE STATS
-    // These should match the "Base" row in your spreadsheet
-    document.getElementById('base-luck-val').innerText = L.toLocaleString();
-    document.getElementById('base-cap-val').innerText = C.toLocaleString();
-    document.getElementById('base-str-val').innerText = Str.toFixed(1);
-    document.getElementById('base-spd-val').innerText = (S + flatSpdAdditions).toFixed(1);
+    // DEBUG: RAW BASE STATS (Match your spreadsheet "Base" row)
+    // Update these IDs if you haven't added them to your HTML yet
+    if(document.getElementById('base-luck-val')) {
+        document.getElementById('base-luck-val').innerText = L.toLocaleString();
+        document.getElementById('base-cap-val').innerText = C.toLocaleString();
+        document.getElementById('base-str-val').innerText = Str.toFixed(1);
+        document.getElementById('base-spd-val').innerText = (S + flatSpdAdditions).toFixed(1);
     }
 
     window.onload = function() {
